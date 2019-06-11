@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Cursos</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css">
+    
+</head>
+<body>
+
+    <h1>Coordinador</h1>
+
+    <button id="getCursos">Cursos disponibles</button>
+    <button id="getEstudiantes">Estudiantes</button>
+    <hr>
+    <form id="cursoForm">
+        <input value="Nombre" type="text" id="newNombre"/>
+        <input value="Descripción" type="text" id="newDescripcion"/>
+        <input value="Valor" type="text" id="newValor"/>
+        <input value="Modalidad" type="text" id="newModalidad"/>
+        <input value="Intensidad horaria" type="text" id="newHoras"/>
+        <button  type="submit">Agregar cursos</button>
+    </form>
+
+    <table id="tCor">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Valor</th>
+                <th>disponible</th>
+                <th>Modalidad</th>
+                <th>Horas</th>
+            </tr>
+        </thead>
+        <tbody id="coordinador"></tbody>
+    </table>
+    <Br>
+    <Br>
+        <h1>Interesado</h1>
+    <button id="getCursosInter">Cursos</button>
+    <hr>
+   
+
+    <table >
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Curso</th>
+                <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody id="interesado"></tbody>
+        <tbody id="estudiantes"></tbody>
+    </table>
+    <form id="inscripcionForm">
+        <input value="Nombre" type="text" id="newNombre"/>
+        <input value="Descripción" type="text" id="newDescripcion"/>
+        <input value="Valor" type="text" id="newValor"/>
+        <input value="id curso" type="text" id="idCurso"/>
+        <button  type="submit">Agregar inscripcion</button>
+    </form>
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+</body>
+</html>
