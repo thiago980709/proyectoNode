@@ -19,7 +19,7 @@ $(function () {
                                  <input type = "text"  class = "cost" value = "${curso.cost}"/>
                              </td>
                              <td>
-                                 <input type = "text"  class = "cost" value = "${curso.available}"/>
+                                 <input type = "text"  class = "available" value = "${curso.available}"/>
                              </td>
                              <td>
                              <input type = "text"  class = "modality" value = "${curso.modality}"/>
@@ -28,11 +28,11 @@ $(function () {
                              <input type = "text"  class = "hours" value = "${curso.hours}"/>
                          </td>
                              <td>
-                                 <button class="update-button">Update</button>
+                                 <button class="update-button">Actualizar</button>
                                 
                              </td>
                              <td>
-                             <button class="delete-button">Delete</button>
+                             <button class="delete-button">Eliminar</button>
                              </td>
                          </tr>
                      `)
@@ -55,7 +55,7 @@ $(function () {
                  name: newNombre.val(),
                  description: newDescripcion.val(),
                  cost: newValor.val(),
-                 available:true,
+                 available:'si',
                  modality: newModalidad.val(),
                  hours: newHoras.val(),
                  
@@ -76,14 +76,19 @@ $(function () {
          let name = row.find('.name').val();
          let description = row.find('.description').val();
          let cost = row.find('.cost').val();
-         console.log(name);
+         let available = row.find('.available').val();
+         let modality = row.find('.modality').val();
+         let hours = row.find('.hours').val();
          $.ajax({
            url: `/cursos/${id}`,
            method: 'PUT',
            data:{
              name:name,
              description:description,
-             cost:cost
+             cost:cost,
+             available:available,
+             modality:modality,
+             hours:hours
            },
            success: function(response) {
              console.log(response);
@@ -115,7 +120,7 @@ $(function () {
               let tbody = $('#interesado');
               tbody.html('');
               cursos.forEach(curso => {
-                  if(curso.available == true){
+                  if(curso.available == 'si'){
                     tbody.append(`
                     <tr>
                         <td class ="id">${curso.id}</td>
@@ -131,7 +136,7 @@ $(function () {
                            <text  class = "cost" >Precio:  ${curso.cost}<text/>
                         </td>
                         <td>
-                            <button>Más info</button>
+                            <button class="info">Más info</button>
                         </td>
                         <Br>
                        
@@ -144,70 +149,17 @@ $(function () {
         });
     });
 
-    $('#getEstudiantes').on('click', function () {
-        $.ajax({
-            url: '/estudiantes',
-            success: function(estudiantes) {
-              let tbody = $('#estudiantes');
-              tbody.html('');
-              estudiantes.forEach(estudiante => {
-                     tbody.append(`
-                         <tr>
-                             <td class ="id">${estudiante.idE}</td>
-                             <td>
-                                 <input type = "text"  class = "nameE" value = "${estudiante.nameE}"/>
-                             </td>
-                             <td>
-                                 <input type = "text"  class = "correoE" value = "${estudiante.correoE}"/>
-                             </td>
-                             <td>
-                                 <input type = "text"  class = "telE" value = "${estudiante.telE}"/>
-                             </td>
-                             <td>
-                                 <button class="update-button">Update</button>
-                                
-                             </td>
-                             <td>
-                             <button class="delete-button2">Delete</button>
-                             </td>
-                         </tr>
-                     `)
-                 })
-             }
-        });
-    });
-
-    $('#inscripcionForm').on('submit', function(e) {
-        e.preventDefault();
-         let nameE = $('#newNombre');
-         let correoE = $('#newDescripcion');
-         let telE = $('#newValor');
-         $.ajax({
-             url: '/estudiantes',
-             method: 'POST',
-             data:{
-                 nameE:nameE.val(),
-                 correoE:correoE.val(),
-                 telE:telE.val()
-                 
-             },
-             success: function(response) {
-               
-                 $('#getEstudiantes').click();
-                console.log(estudiantes);
-             }
-         });
-             
-     });
-
-     $('table').on('click', '.class="update-button"', function(){
+  
+     $('table').on('click', '.info', function(){
         let row = $(this).closest('tr');
-        let idE =row.find('.idE').text();
+        let idE =row.find('.id').text();
+
         $.ajax({
             url: `/cursos/${idE}`,
             method: 'GET',
             success: function(response){
-                alert(`${idE}`);
+                alert(`El curso ${response.name} con modalidad ${response.modality} e intensidadad horaria de ${response.hours} horas: ${response.description}. `);
+                
             }
         });
     });
