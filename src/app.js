@@ -112,8 +112,25 @@ app.post('/ins',(req,res)=>{
         });
     }
 })
+app.get('/verCursosI',(req, res)=>{
+    res.render('verCursosI');
+    
+});
+
+app.post('/eliminar', (req, res) => {
+    if(funciones.eliminarCurso(req.body) == false){
+        console.log(req.body);
+        res.render('verCursos',{
+            
+            err:'No se eliminó'
+        } );
+    }else{
+        err:'Se eliminó'
+    }
+});
 console.log(__dirname);
 
 app.listen(3000,()=>{
     console.log('Puero 3000');
 });
+
