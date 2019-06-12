@@ -15,7 +15,17 @@
         "valor":1111,
         "modalidad":"presencial"
         ,"horas":"333",
+        "estado":"cerrado"
+    },
+    {
+        "id":3,
+        "nombre":"java",
+        "des":"introduccion a java",
+        "valor":1111,
+        "modalidad":"presencial"
+        ,"horas":"333",
         "estado":"disponible"
     }
+
 
 ]

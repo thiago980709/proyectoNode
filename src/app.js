@@ -84,6 +84,10 @@ app.get('/verCursos',(req, res)=>{
     res.render('verCursos');
     
 });
+app.get('/verCursosI',(req, res)=>{
+    res.render('verCursosI');
+    
+});
 console.log(__dirname);
 
 app.listen(3000,()=>{

@@ -152,6 +152,35 @@ hbs.registerHelper('listar',()=>{
     return texto;
 })
 
+hbs.registerHelper('listarDispo',()=>{
+    listarCurso();
+    let texto = `<table id="tbProducto" class="table table-hover" >\
+                    <thead>\
+                        <tr>\
+                            <th>ID</th>\
+                            <th>Curso</th>\
+                            <th>Descripción</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody> `;
+
+    listC.forEach(curso => {
+        if(curso.estado == 'disponible'){
+            texto = texto + 
+            '<tr> ' +
+            '<td>' + curso.id + '</td>' +
+            '<td> ' + curso.nombre + '</td>' +
+            '<td> ' + curso.des + '</td>'
+        }
+        
+    });
+    
+    texto = texto + '</tbody></table>'
+    return texto;
+})
+
+
+
 module.exports = {
     crear,
     actualizar,
