@@ -100,6 +100,21 @@ const listarCurso = () =>{
     
 }
 
+const listarCursosDisponibles = () =>{
+    try{
+        listC = require('../cursos.json');
+        let nuevo = listC.filter(c => c.estado != 'cerrado');
+        if(listC.length == nuevo.length){
+            console.log('Todos los cursos estan disponibles');
+        } else {
+            listC = nuevo;
+        }
+    }catch(error){
+        listC = [];
+    }
+    
+}
+
 
 const guardarCurso = () =>{
     let datos = JSON.stringify(listC);
@@ -188,7 +203,6 @@ const mostrarInscritos = (idCurso) => {
         let e = listU.find(u => u.cc == est.idest);
         lstEstudiantes.push(e);
     });
-    console.log(lstEstudiantes);
     return lstEstudiantes;
     
 }
@@ -235,6 +249,51 @@ hbs.registerHelper('listar',()=>{
     texto = texto + '</tbody></table>'
     return texto;
 })
+
+hbs.registerHelper('listarCursosInscritos', () => {
+    listarCursosDisponibles();
+    let texto = "";
+    listC.forEach(curso => {
+        let lstEstudiantes = mostrarInscritos(curso.id);
+        texto = texto + 
+            '<p>' +
+            '<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample' + curso.id +'" aria-expanded="false" aria-controls="collapseExample' + curso.id +'">' +
+              curso.nombre +
+            '</button>' +
+          '</p>' + 
+          '<div class="collapse" id="collapseExample' + curso.id +'">' +
+            '<div class="card card-body">' + 
+                `<table id="tb" class="table table-hover" >\
+                <thead>\
+                    <tr>\
+                        <th>Documento</th>\
+                        <th>Nombre</th>\
+                        <th>Correo</th>\
+                        <th>Telefono</th>\
+                        <th>Eliminar</th>\
+                    </tr>\
+                </thead>\
+                <tbody> `;
+
+                lstEstudiantes.forEach(est => {
+                    texto = texto + 
+                        '<tr> ' +
+                        '<td class ="id">' + est.cc + '</td>' +
+                        '<td class = "nombre"> ' + est.nombre + '</td>' +
+                        '<td> ' + est.email + '</td>'+
+                        '<td> ' + est.telfono + '</td>'+
+                        '<td> <button class="btn btn-danger">Eliminar</button></td>'
+                });
+
+                texto = texto + '</tbody></table>' +
+              
+            '</div>' +
+          '</div>';
+    });
+    return texto;
+});
+
+
 hbs.registerHelper('masInfo',()=>{
     listarCurso();
    
@@ -310,6 +369,5 @@ module.exports = {
     crearCurso,
     mostrarCursos,
     matricular, 
-    mostrarInscritos,
     eliminarCurso
 }

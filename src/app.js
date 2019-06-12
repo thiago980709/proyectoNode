@@ -90,7 +90,6 @@ app.get('/inscribir',(req, res)=>{
 
 app.get('/inscritos', (req, res) =>{
     res.render('inscritos');
-    funciones.mostrarInscritos(1);
 });
 
 app.post('/ins',(req,res)=>{
