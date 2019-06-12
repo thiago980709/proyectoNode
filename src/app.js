@@ -90,14 +90,18 @@ app.get('/verCursosI',(req, res)=>{
 });
 
 app.post('/eliminar', (req, res) => {
-    if(funciones.eliminarCurso(req.body) == false){
-        console.log(req.body);
+    if(funciones.eliminarCurso(req.body.id) == false){
+        console.log(req.body.id);
         res.render('verCursos',{
             
             err:'No se eliminó'
         } );
     }else{
-        err:'Se eliminó'
+        res.render('verCursos',{
+            
+            err:' se eliminó'
+            
+        } );
     }
 });
 console.log(__dirname);

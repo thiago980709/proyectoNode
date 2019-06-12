@@ -102,34 +102,15 @@ const listarCurso = () =>{
 
 const guardarCurso = () =>{
     let datos = JSON.stringify(listC);
+    console.log(datos);
     fs.writeFile('cursos.json',datos,(err)=>{
         if(err) throw (err);
         console.log('Archivo guardado con exito');
+        
     })
 }
 
-const mostrarCursos = () =>{
-    listarCurso();
-    let texto = "<table >\
-                    <thead>\
-                        <tr>\
-                            <th>ID</th>\
-                            <th>Curso</th>\
-                            <th>Descripción</th>\
-                        </tr>\
-                    </thead>\
-                    <tbody ";
 
-    listC.forEach(curso => {
-        texto = texto + 
-            '<tr> ' +
-            '<td>' + curso.id + '</td>' +
-            '<td> ' + curso.nombre + '</td>' +
-            '<td> ' + curso.des + '</td>'
-    });
-    texto = texto + '</tbody></table>'
-    return texto;
-}
 
 hbs.registerHelper('listar',()=>{
     listarCurso();
@@ -218,13 +199,10 @@ hbs.registerHelper('eliminar',(id)=>{
 
 const eliminarCurso = (id) => {
     listarCurso();
-    let cursoId = listC.filter(c =>c.id != id);
-    if(cursoId.length == listC.length){
-        return false;
-    }else{
-        listaC = cursoId;
-        guardarCurso();
-    }
+    let idC = parseInt(id);
+    let cursoId = listC.filter(c =>c.id != idC);
+    listC = cursoId;
+    guardarCurso();
 };
 
 
@@ -233,6 +211,5 @@ module.exports = {
     actualizar,
     eliminar,
     crearCurso,
-    mostrarCursos,
     eliminarCurso
 }

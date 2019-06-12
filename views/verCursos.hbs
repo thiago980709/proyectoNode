@@ -3,6 +3,7 @@
 {{{listar}}}
 <form action="./eliminar" method="POST">
     <input id="txtNombre" name="id">
+    <button id="eliminar" class="btn btn-danger">Eliminar</button>
 </form>
 <script type="text/javascript">
 
@@ -10,8 +11,9 @@
         let row = $(this).closest('tr');
         let id =row.find('.id').text();
         $('#txtNombre').val(id);      
-        '<h1>hola</h1>'
+        
     });
 </script> 
+
 {{err}}
 {{>footer}}
