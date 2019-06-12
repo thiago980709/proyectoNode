@@ -1,6 +1,13 @@
 {{>header}}
 {{>menuR}}
 {{{listarDispo}}}
+<input id="txtNombre">
+<script type="text/javascript">
+$('#tb tr').on('click', function(){
+  var dato = $(this).find('td:first').html();
+  $('#txtNombre').val(dato);
+});
 
+</script> 
 
 {{>footer}}

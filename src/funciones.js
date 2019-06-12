@@ -98,6 +98,8 @@ const listarCurso = () =>{
     }
     
 }
+
+
 const guardarCurso = () =>{
     let datos = JSON.stringify(listC);
     fs.writeFile('cursos.json',datos,(err)=>{
@@ -131,12 +133,14 @@ const mostrarCursos = () =>{
 
 hbs.registerHelper('listar',()=>{
     listarCurso();
-    let texto = `<table class="table table-hover" >\
+    let texto = `<table id="tb" class="table table-hover" >\
                     <thead>\
                         <tr>\
                             <th>ID</th>\
                             <th>Curso</th>\
                             <th>Descripción</th>\
+                            <th>Valor</th>\
+                            <th>Opciones</th>\
                         </tr>\
                     </thead>\
                     <tbody> `;
@@ -144,17 +148,26 @@ hbs.registerHelper('listar',()=>{
     listC.forEach(curso => {
         texto = texto + 
             '<tr> ' +
-            '<td>' + curso.id + '</td>' +
-            '<td> ' + curso.nombre + '</td>' +
-            '<td> ' + curso.des + '</td>'
+            '<td class ="id">' + curso.id + '</td>' +
+            '<td class = "nombre"> ' + curso.nombre + '</td>' +
+            '<td> ' + curso.des + '</td>'+
+            '<td> ' + curso.valor + '</td>'+
+            '<td> <button class="btn btn-info">Actualizar</button></td>'+
+            '<td>  <button id="eliminar" class="btn-group-toggle">Eliminar</button></td>'
+
     });
+    
     texto = texto + '</tbody></table>'
     return texto;
 })
-
+hbs.registerHelper('masInfo',()=>{
+    listarCurso();
+   
+     
+})
 hbs.registerHelper('listarDispo',()=>{
     listarCurso();
-    let texto = `<table id="tbProducto" class="table table-hover" >\
+    let texto = `<table id="tb" class="table table-hover" >\
                     <thead>\
                         <tr>\
                             <th>ID</th>\
@@ -162,7 +175,8 @@ hbs.registerHelper('listarDispo',()=>{
                             <th>Descripción</th>\
                         </tr>\
                     </thead>\
-                    <tbody> `;
+                    <tbody> 
+                    `;
 
     listC.forEach(curso => {
         if(curso.estado == 'disponible'){
@@ -175,10 +189,43 @@ hbs.registerHelper('listarDispo',()=>{
         
     });
     
+   
     texto = texto + '</tbody></table>'
     return texto;
 })
+  
+hbs.registerHelper('buscar',(id)=>{
+    listarCurso();
+    let texto = listcC.find(buscar => buscar.id == id );
+    return texto.nombre;
+})
 
+hbs.registerHelper('eliminar',(id)=>{
+   
+    $('tb').on('click', '.btn btn-danger', function(){
+        let row = $(this).closest('tr');
+        let id =row.find('.id').text();
+        $.ajax({
+            url: `/cursos/${id}`,
+            method: 'DELETE',
+            success: function(response){
+                listarCurso();
+            }
+        });
+    });
+
+})
+
+const eliminarCurso = (id) => {
+    listarCurso();
+    let cursoId = listC.filter(c =>c.id != id);
+    if(cursoId.length == listC.length){
+        return false;
+    }else{
+        listaC = cursoId;
+        guardarCurso();
+    }
+};
 
 
 module.exports = {
@@ -186,5 +233,6 @@ module.exports = {
     actualizar,
     eliminar,
     crearCurso,
-    mostrarCursos
+    mostrarCursos,
+    eliminarCurso
 }
