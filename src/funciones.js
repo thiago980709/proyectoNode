@@ -2,6 +2,7 @@ const fs = require('fs');
 const hbs = require('hbs');
 listU = [];
 listC =[];
+listM = [];
 
 function crear(estudiante){
     listar();
@@ -129,10 +130,55 @@ const mostrarCursos = () =>{
     return texto;
 }
 
+const matricular =(matricula) =>{
+    listarMatriculas();
+    listarCurso();
+    listar();
+    let m = {
+        idCurso: parseInt(matricula.idcur),
+        idest: matricula.idEst
+    }
+    let estd = listU.find(e => e.cc == matricula.idEst);
+    let curd = listC.find(c => c.id == matricula.idcur);
+    let duplicado = listM.find(ma => ma.idCurso == matricula.idcur && ma.idest == matricula.idEst);
+    if(!duplicado){
+        if(estd){
+            if(curd){
+                listM.push(m);
+                guardarMatricula();
+            }else{
+                return "NC"
+            }
+        }else{
+            return "NE"
+        }
+    }else{
+        return false;
+    }
+
+}
+
+const listarMatriculas = () =>{
+    try{
+        listM = require('../matricula');
+    }catch(error){
+        listM = [];
+    }
+    
+}
+const guardarMatricula = () =>{
+    let datos = JSON.stringify(listM);
+    fs.writeFile('matricula.json',datos,(err)=>{
+        if(err) throw (err);
+        console.log('Archivo guardado con exito');
+    })
+}
+
 module.exports = {
     crear,
     actualizar,
     eliminar,
     crearCurso,
-    mostrarCursos
+    mostrarCursos,
+    matricular
 }

@@ -35,9 +35,7 @@ app.get('/crearCurso',(req, res)=>{
 app.get('/login',(req, res)=>{
     res.render('login');
 });
-app.get('/inscribir',(req, res)=>{
-    res.render('crearCurso');
-});
+
 app.get('/registro',(req, res)=>{
     res.render('registro');
 });
@@ -65,7 +63,7 @@ app.post('/curso',(req,res)=>{
             err:"Curso registrado con exito"
         });
     }
-})
+});
 app.post('/in',(req,res)=>{
     console.log(req.body);
     if(req.body.documento == 123456){
@@ -84,6 +82,31 @@ app.get('/verCursos',(req, res)=>{
     res.render('verCursos');
     
 });
+
+app.get('/inscribir',(req, res)=>{
+    res.render('inscribir');
+    
+});
+
+app.post('/ins',(req,res)=>{
+    if(funciones.matricular(req.body)==false){
+        res.render('inscribir',{
+            err:"El usuario ya se matriculo en este curso"
+        });
+    }else if(funciones.matricular(req.body)=="NC"){
+        res.render('inscribir',{
+            err:"El curso no existe"
+        });
+    }else if(funciones.matricular(req.body)=="NE"){
+        res.render('inscribir',{
+            err:"El estudiante no existe"
+        });
+    }else{
+        res.render('inscribir',{
+            err:"Estudiante matriculado"
+        });
+    }
+})
 console.log(__dirname);
 
 app.listen(3000,()=>{
