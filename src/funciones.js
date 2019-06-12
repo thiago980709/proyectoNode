@@ -174,11 +174,43 @@ const guardarMatricula = () =>{
     })
 }
 
+const mostrarInscritos = (idCurso) => {
+    listarMatriculas();
+    listar();
+
+    let lstEstudiantes = [];
+
+    let estudiantes = listM.filter(e => e.idCurso == idCurso)
+
+    estudiantes.forEach(est => {
+        let e = listU.find(u => u.cc == est.idest);
+        lstEstudiantes.push(e);
+    });
+    console.log(lstEstudiantes);
+    return lstEstudiantes;
+    
+}
+
+const eliminarInscrito = (idEst) => {
+    listarMatriculas();
+    let nuevo = listM.filter(m => m.idest != idEst);
+    listM = nuevo;
+    guardarMatricula();
+}
+
+const actualizarCurso = (idCurso) => {
+    listarCurso();
+    let encontrado = listC.find(c => c.id == idCurso);
+    curso[estado] = 'cerrado';
+    guardarCurso();
+}
+
 module.exports = {
     crear,
     actualizar,
     eliminar,
     crearCurso,
     mostrarCursos,
-    matricular
+    matricular, 
+    mostrarInscritos
 }
