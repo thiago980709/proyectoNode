@@ -92,7 +92,7 @@ const crearCurso =(curso)=>{
 
 const listarCurso = () =>{
     try{
-        listC = require('../cursos');
+        listC = require('../cursos.json');
     }catch(error){
         listC = [];
     }
@@ -128,6 +128,29 @@ const mostrarCursos = () =>{
     texto = texto + '</tbody></table>'
     return texto;
 }
+
+hbs.registerHelper('listar',()=>{
+    listarCurso();
+    let texto = `<table class="table table-hover" >\
+                    <thead>\
+                        <tr>\
+                            <th>ID</th>\
+                            <th>Curso</th>\
+                            <th>Descripción</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody> `;
+
+    listC.forEach(curso => {
+        texto = texto + 
+            '<tr> ' +
+            '<td>' + curso.id + '</td>' +
+            '<td> ' + curso.nombre + '</td>' +
+            '<td> ' + curso.des + '</td>'
+    });
+    texto = texto + '</tbody></table>'
+    return texto;
+})
 
 module.exports = {
     crear,
