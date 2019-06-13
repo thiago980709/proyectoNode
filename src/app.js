@@ -189,6 +189,18 @@ app.post('/misCursos',(req,res)=>{
     }
     
 })
+app.post('/actualizarCurso',(req,res)=>{
+    if(funciones.actualizarCurso(req.body.id)==false){
+        res.render('verCursos',{
+            err:"No se pudo actualizar "
+        });
+    }else{
+        res.render('verCursos',{
+            err:"Actualizado correctamente"
+        });
+    }
+})
+
 //////////////////////////inscritos
 app.get('/inscritos',(req, res)=>{
     res.render('inscritos');

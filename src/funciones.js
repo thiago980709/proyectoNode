@@ -196,12 +196,6 @@ const eliminarInscrito = (idEst) => {
     guardarMatricula();
 }
 
-const actualizarCurso = (idCurso) => {
-    listarCurso();
-    let encontrado = listC.find(c => c.id == idCurso);
-    curso[estado] = 'cerrado';
-    guardarCurso();
-}
 hbs.registerHelper('listar',()=>{
     listarCurso();
     let texto = `<table id="tb" class="table table-hover" >\
@@ -211,6 +205,7 @@ hbs.registerHelper('listar',()=>{
                             <th>Curso</th>\
                             <th>Descripción</th>\
                             <th>Valor</th>\
+                            <th>Estado</th>\
                         </tr>\
                     </thead>\
                     <tbody> `;
@@ -221,7 +216,9 @@ hbs.registerHelper('listar',()=>{
             '<td class ="id">' + curso.id + '</td>' +
             '<td class = "nombre"> ' + curso.nombre + '</td>' +
             '<td> ' + curso.des + '</td>'+
-            '<td> ' + curso.valor + '</td>'
+            '<td> ' + curso.valor + '</td>'+
+            '<td> <input type = "text"  class = "tipo" value=' + curso.estado +' ></td>'
+
 
     });
     
@@ -273,8 +270,21 @@ hbs.registerHelper('listarCursosInscritos', () => {
 });
 
 
+const actualizarCurso = (idCurso) => {
+    listarCurso();
+    console.log(idCurso);
+    
+    listC.forEach(c => {
+        if(c.id == idCurso ){
+         c.estado = 'Cerrado';
+         guardarCurso();
+        }
+    });
+  
+}
+
 hbs.registerHelper('masInfo',()=>{
-    console
+    console.log(msj);
      
 })
 
@@ -531,5 +541,6 @@ module.exports = {
     cursosEst,
     eliminarInscrito,
     actualizarUsuarios,
-    listarMatriculas
+    listarMatriculas,
+    actualizarCurso
 }
