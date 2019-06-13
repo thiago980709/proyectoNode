@@ -105,6 +105,10 @@ app.post('/ins',(req,res)=>{
         res.render('inscribir',{
             err:"El estudiante no existe"
         });
+    }else if(funciones.matricular(req.body)=="ND"){
+        res.render('inscribir',{
+            err:"El curso ya esta cerrado"
+        });
     }else{
         res.render('inscribir',{
             err:"Estudiante matriculado"

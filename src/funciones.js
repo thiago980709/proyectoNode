@@ -143,8 +143,13 @@ const matricular =(matricula) =>{
     if(!duplicado){
         if(estd){
             if(curd){
-                listM.push(m);
-                guardarMatricula();
+                if(curd.estado == "disponible"){
+                    listM.push(m);
+                    guardarMatricula();
+                }else{
+                    return "ND"
+                }
+                
             }else{
                 return "NC"
             }
