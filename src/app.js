@@ -167,9 +167,26 @@ app.post('/misC',(req,res)=>{
     
 })
 
-app.post('/elim',(req,res)=>{
-    funciones.eliminarCurso(req.body.idc,ide);
-    res.render('misCursos');
+app.post('/misCursos',(req,res)=>{
+    console.log(ide);
+    console.log(req.body.idc);
+    if(funciones.eliminarCurso(req.body.idc,ide) ==false){
+        res.render('misCursos',{
+            err: "Curso no eliminado"
+        } );
+    }else{
+        
+        if(funciones.cursosEst(ide) == false){
+            res.render('misCursos',{
+                err: "Este usuario no esta resgistrado en ningun curso"
+            } );
+        }else{
+            res.render('misCursos',{
+                err: "Curso eliminado"
+            });
+        }
+        
+    }
     
 })
 //////////////////////////inscritos

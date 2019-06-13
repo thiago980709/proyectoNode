@@ -408,7 +408,17 @@ hbs.registerHelper('buscar',(id)=>{
 const eliminarCurso = (idc,idE) => {
     listarMatriculas();
     let idC = parseInt(idc);
-    let cursoId = listM.filter(c =>c.idCurso != idC && c.idest != idE);
+    let cursoId = [];// listM.filter(c =>c.idCurso != idC && c.idest != idE);
+    
+    
+    listM.forEach(s =>{
+        console.log(s.idCurso);
+        console.log(s.idest);
+        if(s.idCurso != idC || s.idest != idE){
+            cursoId.push(s);
+        }
+    })
+    console.log(cursoId.length);
     if(cursoId.length == listM.length){
         return false;
     }else{
@@ -501,7 +511,7 @@ hbs.registerHelper('listarMC',()=>{
     });
     
    
-    texto = texto + '</tbody></table> <form class="form-inline" action="./elim" method="POST">\
+    texto = texto + '</tbody></table> <form class="form-inline" action="./misCursos" method="POST">\
     <label class="sr-only" for="inlineFormInputName2">Name</label>\
     <input type="text" class="form-control mb-2 mr-sm-2" name="idc" placeholder=" ID curso a eliminar" required>\
     <button type="submit" class="btn btn-primary mb-2">Eliminar</button></form>'
@@ -520,5 +530,6 @@ module.exports = {
     informacion,
     cursosEst,
     eliminarInscrito,
-    actualizarUsuarios
+    actualizarUsuarios,
+    listarMatriculas
 }
