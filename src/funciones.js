@@ -121,7 +121,6 @@ hbs.registerHelper('listar',()=>{
                             <th>Curso</th>\
                             <th>Descripción</th>\
                             <th>Valor</th>\
-                            <th>Opciones</th>\
                         </tr>\
                     </thead>\
                     <tbody> `;
@@ -132,9 +131,7 @@ hbs.registerHelper('listar',()=>{
             '<td class ="id">' + curso.id + '</td>' +
             '<td class = "nombre"> ' + curso.nombre + '</td>' +
             '<td> ' + curso.des + '</td>'+
-            '<td> ' + curso.valor + '</td>'+
-            '<td> <button class="btn btn-info">Actualizar</button></td>'+
-            '<td>  <button id="eliminar" class="btn-group-toggle">Eliminar</button></td>'
+            '<td> ' + curso.valor + '</td>'
 
     });
     

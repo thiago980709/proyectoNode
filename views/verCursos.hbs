@@ -1,19 +1,5 @@
 {{>header}}
 {{>menu}}
 {{{listar}}}
-<form action="./eliminar" method="POST">
-    <input id="txtNombre" name="id">
-    <button id="eliminar" class="btn btn-danger">Eliminar</button>
-</form>
-<script type="text/javascript">
-
- $('.btn-group-toggle').on('click', function(){
-        let row = $(this).closest('tr');
-        let id =row.find('.id').text();
-        $('#txtNombre').val(id);      
-        
-    });
-</script> 
-{{{mostrar}}}
 {{err}}
 {{>footer}}
