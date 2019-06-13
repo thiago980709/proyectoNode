@@ -121,6 +121,7 @@ hbs.registerHelper('listar',()=>{
                             <th>Curso</th>\
                             <th>Descripción</th>\
                             <th>Valor</th>\
+                            <th>Estado</th>\
                         </tr>\
                     </thead>\
                     <tbody> `;
@@ -131,15 +132,32 @@ hbs.registerHelper('listar',()=>{
             '<td class ="id">' + curso.id + '</td>' +
             '<td class = "nombre"> ' + curso.nombre + '</td>' +
             '<td> ' + curso.des + '</td>'+
-            '<td> ' + curso.valor + '</td>'
+            '<td> ' + curso.valor + '</td>'+
+            '<td> <input type = "text"  class = "tipo" value=' + curso.estado +' ></td>'
+
 
     });
     
     texto = texto + '</tbody></table>'
     return texto;
 })
+
+
+const actualizarCurso = (idCurso) => {
+    listarCurso();
+    console.log(idCurso);
+    
+    listC.forEach(c => {
+        if(c.id == idCurso ){
+         c.estado = 'Cerrado';
+         guardarCurso();
+        }
+    });
+  
+}
+
 hbs.registerHelper('masInfo',()=>{
-    console
+    console.log(msj);
      
 })
 hbs.registerHelper('listarDispo',()=>{
@@ -310,5 +328,6 @@ module.exports = {
     crearCurso,
     eliminarCurso,
     informacion,
-    actualizarUsuarios
+    actualizarUsuarios,
+    actualizarCurso
 }
