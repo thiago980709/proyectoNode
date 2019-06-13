@@ -3,6 +3,7 @@ const hbs = require('hbs');
 listU = [];
 listC =[];
 listM = [];
+l = [];
 
 function crear(estudiante){
     listar();
@@ -103,34 +104,15 @@ const listarCurso = () =>{
 
 const guardarCurso = () =>{
     let datos = JSON.stringify(listC);
+    console.log(datos);
     fs.writeFile('cursos.json',datos,(err)=>{
         if(err) throw (err);
         console.log('Archivo guardado con exito');
+        
     })
 }
 
-const mostrarCursos = () =>{
-    listarCurso();
-    let texto = "<table >\
-                    <thead>\
-                        <tr>\
-                            <th>ID</th>\
-                            <th>Curso</th>\
-                            <th>Descripción</th>\
-                        </tr>\
-                    </thead>\
-                    <tbody ";
 
-    listC.forEach(curso => {
-        texto = texto + 
-            '<tr> ' +
-            '<td>' + curso.id + '</td>' +
-            '<td> ' + curso.nombre + '</td>' +
-            '<td> ' + curso.des + '</td>'
-    });
-    texto = texto + '</tbody></table>'
-    return texto;
-}
 
 const matricular =(matricula) =>{
     listarMatriculas();
@@ -215,7 +197,6 @@ hbs.registerHelper('listar',()=>{
                             <th>Curso</th>\
                             <th>Descripción</th>\
                             <th>Valor</th>\
-                            <th>Opciones</th>\
                         </tr>\
                     </thead>\
                     <tbody> `;
@@ -226,9 +207,7 @@ hbs.registerHelper('listar',()=>{
             '<td class ="id">' + curso.id + '</td>' +
             '<td class = "nombre"> ' + curso.nombre + '</td>' +
             '<td> ' + curso.des + '</td>'+
-            '<td> ' + curso.valor + '</td>'+
-            '<td> <button class="btn btn-info">Actualizar</button></td>'+
-            '<td>  <button id="eliminar" class="btn-group-toggle">Eliminar</button></td>'
+            '<td> ' + curso.valor + '</td>'
 
     });
     
@@ -236,10 +215,10 @@ hbs.registerHelper('listar',()=>{
     return texto;
 })
 hbs.registerHelper('masInfo',()=>{
-    listarCurso();
-   
+    console
      
 })
+
 hbs.registerHelper('listarDispo',()=>{
     listarCurso();
     let texto = `<table id="tb" class="table table-hover" >\
@@ -275,41 +254,118 @@ hbs.registerHelper('buscar',(id)=>{
     return texto.nombre;
 })
 
-hbs.registerHelper('eliminar',(id)=>{
-   
-    $('tb').on('click', '.btn btn-danger', function(){
-        let row = $(this).closest('tr');
-        let id =row.find('.id').text();
-        $.ajax({
-            url: `/cursos/${id}`,
-            method: 'DELETE',
-            success: function(response){
-                listarCurso();
-            }
-        });
-    });
 
-})
 
-const eliminarCurso = (id) => {
-    listarCurso();
-    let cursoId = listC.filter(c =>c.id != id);
-    if(cursoId.length == listC.length){
-        return false;
-    }else{
-        listaC = cursoId;
-        guardarCurso();
-    }
+const eliminarCurso = (idc,idE) => {
+    listarMatriculas();
+    let idC = parseInt(idc);
+    let cursoId = listM.filter(c =>c.idCurso!=idC && c.idest != idE);
+    listM = cursoId;
+    guardarMatricula();
 };
 
+var msj;
+const informacion = (id) => {
+    listarCurso();
+    let idC = parseInt(id);
+    let cursoId = listC.filter(c =>c.id == idC);
+    var yourval = JSON.stringify(cursoId);
+    
+    cursoId.forEach(element => {
+        //console.log(element);
+        //console.log(element.nombre);
+        msj=(`El curso ${element.nombre}, tiene un 
+        valor de ${element.valor}, con modalidad ${element.modalidad}
+        de ${element.horas} horas:
+        ${element.des}`);
+    });
+    
+        return msj;
+};
+
+hbs.registerHelper('mostrar',()=>{
+    console.log(msj);
+    let t = `<div class="alert alert-primary" role="alert">\
+            `+msj+`
+    <tbody> 
+    `;
+    
+    t = t + '</tbody></div>'
+    return t;
+})
+
+
+const cursosEst = (cedula) =>{
+    listarCurso();
+    listarMatriculas();
+    listar();
+    l = [];
+    let ma = listM.filter(m => m.idest == cedula);
+    let cur;
+    if(ma.length>0){
+        ma.forEach(cu =>{
+            cur = listC.filter(c => c.id == cu.idCurso);
+            cur.forEach(s =>{
+                l.push(s);
+                
+            })
+            
+    
+        })
+        console.log(l);
+        if(cur.length>0){
+            
+            return l;
+        }else{
+            console.log(cur);
+        }
+    }else{
+        return false;
+    }
+    
+
+}
+hbs.registerHelper('listarMC',()=>{
+    let texto = `<table id="tb" class="table table-hover" >\
+                    <thead>\
+                        <tr>\
+                            <th>ID</th>\
+                            <th>Curso</th>\
+                            <th>Descripción</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody> 
+                    `;
+    //console.log("ff " + l);
+    l.forEach(curso => {
+        
+        texto = texto + 
+        '<tr> ' +
+        '<td>' + curso.id + '</td>' +
+        '<td> ' + curso.nombre + '</td>' +
+        '<td> ' + curso.des + '</td>'
+        
+        
+    });
+    
+   
+    texto = texto + '</tbody></table> <form class="form-inline" action="./elim" method="POST">\
+    <label class="sr-only" for="inlineFormInputName2">Name</label>\
+    <input type="text" class="form-control mb-2 mr-sm-2" name="idc" placeholder=" ID curso a eliminar" required>\
+    <button type="submit" class="btn btn-primary mb-2">Eliminar</button></form>'
+    return texto;
+})
+  
 
 module.exports = {
     crear,
     actualizar,
     eliminar,
     crearCurso,
-    mostrarCursos,
     matricular, 
     mostrarInscritos,
-    eliminarCurso
+    eliminarCurso,
+    informacion,
+    cursosEst,
+    eliminarInscrito
 }

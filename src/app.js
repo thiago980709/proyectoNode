@@ -118,16 +118,61 @@ app.get('/verCursosI',(req, res)=>{
 });
 
 app.post('/eliminar', (req, res) => {
-    if(funciones.eliminarCurso(req.body) == false){
-        console.log(req.body);
+    if(funciones.eliminarCurso(req.body.id) == false){
+        console.log(req.body.id);
         res.render('verCursos',{
             
             err:'No se eliminó'
         } );
     }else{
-        err:'Se eliminó'
+        res.render('verCursos',{
+            
+            err:' se eliminó'
+            
+        } );
     }
 });
+
+app.post('/informacion', (req, res) => {
+    if(funciones.informacion(req.body.id) == false){
+        console.log(req.body.id);
+        res.render('verCursosI',{
+            
+            err:'no se accedio a la info'
+        } );
+    }else{
+        res.render('verCursosI',{
+            
+            err:'Info accedida correctamente'
+            
+        } );
+    }
+});
+
+app.get('/misCursos',(req,res)=>{
+    res.render('misCursos',{
+            
+    } );
+});
+let ide = "";
+app.post('/misC',(req,res)=>{
+    ide =req.body.idEst;
+    
+    if(funciones.cursosEst(req.body.idEst) == false){
+        res.render('misCursos',{
+            err: "Usuario no encontrado"
+        } );
+    }else{
+        res.render('misCursos');
+    }
+    
+})
+
+app.post('/elim',(req,res)=>{
+    funciones.eliminarCurso(req.body.idc,ide);
+    res.render('misCursos');
+    
+})
 console.log(__dirname);
 
 app.listen(3000,()=>{
