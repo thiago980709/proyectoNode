@@ -1,3 +1,13 @@
 {{>header}}
 {{>menu}}
+{{{listarUsu}}}
+<input id="txtNombre" name="id">
+<script type="text/javascript">
+$('#tb tr').on('click', function(){
+  var dato = $('td').find('input').html();
+  $('#txtNombre').val(dato);
+});
+
+</script> 
+{{{comboBoxUsu}}}
 {{>footer}}

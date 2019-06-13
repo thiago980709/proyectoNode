@@ -120,6 +120,38 @@ app.post('/informacion', (req, res) => {
         } );
     }
 });
+//////////////////////////inscritos
+app.get('/inscritos',(req, res)=>{
+    res.render('inscritos');
+    
+});
+
+app.put('/actualizarUsuarios', (req, response) => {
+    console.log(req.body, req.params)
+    const { cc } = req.params;
+    const { nombre, email,telefono, tipo } = req.body;
+    if(funciones.actualizarUsuarios(req.body) == false){
+        res.render('inscritos',{
+            err:"no se pudo"
+        });
+    }else{
+        res.render('inscritos',{
+            usu:req.body.cc
+        });
+    }
+
+    listU.forEach((usu) => {
+        if(curso.cc == cc){
+            usu.nombre = nombre;
+            usu.email = email;
+            usu.telefono = telefono;
+            usu.tipo = tipo;
+        }
+    });
+    response.json('Successfully update');
+});
+
+
 console.log(__dirname);
 
 app.listen(3000,()=>{

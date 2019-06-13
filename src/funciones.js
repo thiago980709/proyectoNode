@@ -170,6 +170,96 @@ hbs.registerHelper('listarDispo',()=>{
     texto = texto + '</tbody></table>'
     return texto;
 })
+
+hbs.registerHelper('comboBoxUsu',()=>{
+    listar();
+    let texto;
+    listU.forEach(usu => {
+            texto = texto + 
+            `<div class="dropdown">\
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
+    Dropdown</button>\
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">'+usu.cc+'</a>`;
+            
+        
+        console.log(usu.cc+'-');
+    });
+   
+    texto = texto + '</div></div>'
+    return texto;
+})
+
+
+hbs.registerHelper('listarUsu',()=>{
+    listar();
+    let texto = `<table id="tb" class="table table-hover" >\
+                    <thead>\
+                        <tr>\
+                            <th>cc</th>\
+                            <th>nombre</th>\
+                            <th>telefono</th>\
+                            <th>email</th>\
+                            <th>tipo</th>\
+                            <th>Actualizar</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody> 
+                    `;
+
+    listU.forEach(usu => {
+       
+            texto = texto + 
+            '<tr> ' +
+            '<td><input type = "text"  class = "cc" id="cc" value='+usu.cc+' ></td>' +
+            '<td> <input type = "text"  class = "nombre" value='+usu.nombre+' ></td>' +
+            '<td> <input type = "text"  class = "telefono" value='+usu.telefono+' ></td>' +
+            '<td> <input type = "text"  class = "email" value='+usu.email+' ></td>' +
+            '<td> <input type = "text"  class = "tipo" value='+usu.tipo+' ></td>'+
+            '<td><button class="btn btn-primary">Actualizar</button></td>'
+        
+        
+    });
+    
+   
+    texto = texto + '</tbody></table>'
+    return texto;
+})
+
+hbs.registerHelper('actualizarUsuarios',(cc, nombre, email, telefono, tipo)=>{
+    listar();
+
+    let encontrado = listE.find(buscar => buscar.cc == cc );
+
+    if(!encontrado){
+        console.log('El usuario no existe');
+    }else{
+        cc=cc;
+        nombre=nombre;
+        email=email;
+        telefono=telefono;
+        tipo=tipo;
+        guardar();
+    }
+})
+
+const actualizarUsuarios = (cc, nombre, email, telefono, tipo) =>{
+    listar();
+
+    let encontrado = listE.find(buscar => buscar.cc == cc );
+
+    if(!encontrado){
+        console.log('El usuario no existe');
+    }else{
+        cc=cc;
+        nombre=nombre;
+        email=email;
+        telefono=telefono;
+        tipo=tipo;
+        guardar();
+    }
+}
   
 hbs.registerHelper('buscar',(id)=>{
     listarCurso();
@@ -192,10 +282,8 @@ const informacion = (id) => {
     let idC = parseInt(id);
     let cursoId = listC.filter(c =>c.id == idC);
     var yourval = JSON.stringify(cursoId);
-    
+    console.log(cursoId);
     cursoId.forEach(element => {
-        //console.log(element);
-        //console.log(element.nombre);
         msj=(`El curso ${element.nombre}, tiene un 
         valor de ${element.valor}, con modalidad ${element.modalidad}
         de ${element.horas} horas:
@@ -211,7 +299,6 @@ hbs.registerHelper('mostrar',()=>{
             `+msj+`
     <tbody> 
     `;
-    
     t = t + '</tbody></div>'
     return t;
 })
@@ -222,5 +309,6 @@ module.exports = {
     eliminar,
     crearCurso,
     eliminarCurso,
-    informacion
+    informacion,
+    actualizarUsuarios
 }
