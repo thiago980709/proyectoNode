@@ -142,8 +142,7 @@ hbs.registerHelper('listar',()=>{
     return texto;
 })
 hbs.registerHelper('masInfo',()=>{
-    listarCurso();
-   
+    console
      
 })
 hbs.registerHelper('listarDispo',()=>{
@@ -181,21 +180,7 @@ hbs.registerHelper('buscar',(id)=>{
     return texto.nombre;
 })
 
-hbs.registerHelper('eliminar',(id)=>{
-   
-    $('tb').on('click', '.btn btn-danger', function(){
-        let row = $(this).closest('tr');
-        let id =row.find('.id').text();
-        $.ajax({
-            url: `/cursos/${id}`,
-            method: 'DELETE',
-            success: function(response){
-                listarCurso();
-            }
-        });
-    });
 
-})
 
 const eliminarCurso = (id) => {
     listarCurso();
@@ -204,12 +189,41 @@ const eliminarCurso = (id) => {
     listC = cursoId;
     guardarCurso();
 };
+var msj;
+const informacion = (id) => {
+    listarCurso();
+    let idC = parseInt(id);
+    let cursoId = listC.filter(c =>c.id == idC);
+    var yourval = JSON.stringify(cursoId);
+    
+    cursoId.forEach(element => {
+        //console.log(element);
+        //console.log(element.nombre);
+        msj=(`El curso ${element.nombre}, tiene un 
+        valor de ${element.valor}, con modalidad ${element.modalidad}
+        de ${element.horas} horas:
+        ${element.des}`);
+    });
+    
+        return msj;
+};
 
+hbs.registerHelper('mostrar',()=>{
+    console.log(msj);
+    let t = `<div class="alert alert-primary" role="alert">\
+            `+msj+`
+    <tbody> 
+    `;
+    
+    t = t + '</tbody></div>'
+    return t;
+})
 
 module.exports = {
     crear,
     actualizar,
     eliminar,
     crearCurso,
-    eliminarCurso
+    eliminarCurso,
+    informacion
 }

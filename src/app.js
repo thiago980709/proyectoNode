@@ -104,6 +104,22 @@ app.post('/eliminar', (req, res) => {
         } );
     }
 });
+
+app.post('/informacion', (req, res) => {
+    if(funciones.informacion(req.body.id) == false){
+        console.log(req.body.id);
+        res.render('verCursosI',{
+            
+            err:'no se accedio a la info'
+        } );
+    }else{
+        res.render('verCursosI',{
+            
+            err:'Info accedida correctamente'
+            
+        } );
+    }
+});
 console.log(__dirname);
 
 app.listen(3000,()=>{
