@@ -259,9 +259,15 @@ hbs.registerHelper('buscar',(id)=>{
 const eliminarCurso = (idc,idE) => {
     listarMatriculas();
     let idC = parseInt(idc);
-    let cursoId = listM.filter(c =>c.idCurso!=idC && c.idest != idE);
-    listM = cursoId;
-    guardarMatricula();
+    let cursoId = listM.filter(c =>c.idCurso != idC && c.idest != idE);
+    if(cursoId.length == listM.length){
+        return false;
+    }else{
+        listM = cursoId;
+        console.log(listM)
+        guardarMatricula();
+    }
+    
 };
 
 var msj;
