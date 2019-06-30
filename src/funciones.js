@@ -194,12 +194,11 @@ hbs.registerHelper('comboBoxUsu',()=>{
     let texto;
     listU.forEach(usu => {
             texto = texto + 
-            `<div class="dropdown">\
+            '<div class="dropdown">\
   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
     Dropdown</button>\
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">'+usu.cc+'</a>`;
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
+            <a>'+ usu.cc +'</a>';
             
         
         console.log(usu.cc+'-');
