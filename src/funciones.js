@@ -112,8 +112,7 @@ const guardarCurso = () =>{
 
 
 
-hbs.registerHelper('listar',()=>{
-    listarCurso();
+hbs.registerHelper('listar',(lista)=>{
     let texto = `<table id="tb" class="table table-hover" >\
                     <thead>\
                         <tr>\
@@ -126,7 +125,7 @@ hbs.registerHelper('listar',()=>{
                     </thead>\
                     <tbody> `;
 
-    listC.forEach(curso => {
+    lista.forEach(curso => {
         texto = texto + 
             '<tr> ' +
             '<td class ="id">' + curso.id + '</td>' +
@@ -160,8 +159,7 @@ hbs.registerHelper('masInfo',()=>{
     console.log(msj);
      
 })
-hbs.registerHelper('listarDispo',()=>{
-    listarCurso();
+hbs.registerHelper('listarDispo',(lista)=>{
     let texto = `<table id="tb" class="table table-hover" >\
                     <thead>\
                         <tr>\
@@ -173,7 +171,7 @@ hbs.registerHelper('listarDispo',()=>{
                     <tbody> 
                     `;
 
-    listC.forEach(curso => {
+    lista.forEach(curso => {
         if(curso.estado == 'disponible'){
             texto = texto + 
             '<tr> ' +
@@ -209,12 +207,11 @@ hbs.registerHelper('comboBoxUsu',()=>{
 })
 
 
-hbs.registerHelper('listarUsu',()=>{
-    listar();
+hbs.registerHelper('listarUsu',(listadoU)=>{
     let texto = `<table id="tb" class="table table-hover" >\
                     <thead>\
                         <tr>\
-                            <th>cc</th>\
+                            <th>Documento</th>\
                             <th>nombre</th>\
                             <th>telefono</th>\
                             <th>email</th>\
@@ -225,11 +222,11 @@ hbs.registerHelper('listarUsu',()=>{
                     <tbody> 
                     `;
 
-    listU.forEach(usu => {
+       listadoU.forEach(usu => {
        
             texto = texto + 
             '<tr> ' +
-            '<td><input type = "text"  class = "cc" id="cc" value='+usu.cc+' ></td>' +
+            '<td><input type = "text"  class = "documento" id="documento" value='+usu.documento+' ></td>' +
             '<td> <input type = "text"  class = "nombre" value='+usu.nombre+' ></td>' +
             '<td> <input type = "text"  class = "telefono" value='+usu.telefono+' ></td>' +
             '<td> <input type = "text"  class = "email" value='+usu.email+' ></td>' +

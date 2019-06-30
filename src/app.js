@@ -1,3 +1,4 @@
+require('./config/config');
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -6,7 +7,9 @@ const bodyParser = require('body-parser')
 const dirNode_modules = path.join(__dirname , '../node_modules')
 const funciones = require('./funciones');
 
-
+const mongoose = require('mongoose');
+const Curso = require('./../src/models/cursos');
+const Usuario = require('./../src/models/usuarios');
 
 const directoriopublico = path.join(__dirname,'../public');
 const directoriopartials = path.join(__dirname,'../partials');
@@ -43,28 +46,48 @@ app.get('/registro',(req, res)=>{
 });
 app.post('/indexU',(req, res)=>{
     
-    if(funciones.crear(req.body) == false){
-        res.render('registro',{
-            err:"Este estudiante ya esta registrado"
-        });
-    }else{
-        res.render('indexU',{
-            est:req.body.nombre
-        });
-    }
+    let usuario = new Usuario({
+        nombre:req.body.nombre,
+        documento:req.body.documento,
+        email:req.body.email,
+        telefono:req.body.telefono,
+        tipo:'a'
+    }) 
+    console.log(req.body);
+    usuario.save((err,resultado)=>{
+       if(err){
+        res.render('indexU', {
+            err:err
+        })
+       }
+       res.render('indexU',{
+        err:resultado
+    })
+})
     
 });
 
 app.post('/curso',(req,res)=>{
-    if(funciones.crearCurso(req.body)==false){
-        res.render('crearCurso',{
-            err:"Este curso ya existe!"
-        });
-    }else{
-        res.render('crearCurso',{
-            err:"Curso registrado con exito"
-        });
-    }
+    let curso = new Curso({
+        id:req.body.newId,
+        nombre:req.body.newNombre,
+        des:req.body.newDescripcion,
+        valor:req.body.newValor,
+        modalidad:req.body.newModalidad,
+        horas:req.body.newHoras,
+        estado:'disponible'
+    }) 
+    console.log(req.body);
+    curso.save((err,resultado)=>{
+       if(err){
+        res.render('crearCurso', {
+            err:err
+        })
+       }
+       res.render('crearCurso',{
+        err:resultado
+       })
+    })
 })
 app.post('/in',(req,res)=>{
     console.log(req.body);
@@ -81,11 +104,32 @@ app.post('/in',(req,res)=>{
 });
 
 app.get('/verCursos',(req, res)=>{
-    res.render('verCursos');
+    Curso.find({}).exec((err, respuesta)=>{
+        if(err){
+            return console.log(err)
+        }
+        let lista= respuesta;
+
+        res.render('verCursos', {
+            listado:respuesta
+        })
+   
+        
+    })
     
 });
 app.get('/verCursosI',(req, res)=>{
-    res.render('verCursosI');
+    Curso.find({}).exec((err, respuesta)=>{
+        if(err){
+            return console.log(err)
+        }
+        let lista= respuesta;
+
+        res.render('verCursos', {
+            listado:respuesta
+        })
+        
+    })
     
 });
 
@@ -135,7 +179,14 @@ app.post('/actualizarCurso',(req,res)=>{
 
 //////////////////////////inscritos
 app.get('/inscritos',(req, res)=>{
-    res.render('inscritos');
+    Usuario.find({}).exec((err, respuesta)=>{
+        if(err){
+            return console.log(err)
+        }
+        res.render('inscritos', {
+            listadoU:respuesta
+        })
+    })
     
 });
 
@@ -164,6 +215,12 @@ app.put('/actualizarUsuarios', (req, response) => {
     response.json('Successfully update');
 });
 
+mongoose.connect('mongodb://localhost:27017/cursos', {useNewUrlParser: true}, (err, res)=>{
+    if(err){
+        return console.log(err);
+    }
+    console.log('conectado');
+});
 
 console.log(__dirname);
 
