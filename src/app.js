@@ -50,10 +50,10 @@ app.post('/indexU',(req, res)=>{
         nombre:req.body.nombre,
         documento:req.body.documento,
         email:req.body.email,
-        telefono:req.body.telefono,
+        telefono_cel:req.body.telefono_cel,
         tipo:'a'
     }) 
-    console.log(req.body);
+    //console.log(req.body);
     usuario.save((err,resultado)=>{
        if(err){
         res.render('indexU', {
@@ -125,7 +125,7 @@ app.get('/verCursosI',(req, res)=>{
         }
         let lista= respuesta;
 
-        res.render('verCursos', {
+        res.render('verCursosI', {
             listado:respuesta
         })
         
@@ -150,6 +150,21 @@ app.post('/eliminar', (req, res) => {
 });
 
 app.post('/informacion', (req, res) => {
+    console.log(req.body.id);
+    funciones.informacion(req.body.id);
+    Curso.find({}).exec((err, respuesta)=>{
+        if(err){
+            return console.log(err)
+        }
+        //console.log(res);
+        let lista= respuesta;
+       
+        res.render('verCursosI', {
+            listado:respuesta
+        })
+        
+    })
+    /*
     if(funciones.informacion(req.body.id) == false){
         console.log(req.body.id);
         res.render('verCursosI',{
@@ -163,9 +178,74 @@ app.post('/informacion', (req, res) => {
             
         } );
     }
+    */
+
 });
+/**
+ * app.post('/actualizarCurso',(req,res)=>{
+    Curso.findOneAndUpdate({id : req.body.id},req.body,{new:true, useFindAndModify: false},(err, resultado)=>{
+       console.log(resultado);
+        if(err){
+            return console.log(err)
+        }
+         let curso = new Curso({
+        id:req.body.id,
+        nombre: resultado.nombre,
+            des: resultado.des,
+            valor: resultado.valor,
+            modalidad: resultado.modalidad,
+            horas: resultado.horas,
+            estado: 'Cerrado'
+    }) 
+    //console.log(req.body);
+    curso.save((err,resultado)=>{
+       if(err){
+        res.render('verCursos', {
+            err:err
+        })
+       }
+       res.render('login')
+    })
+        
+    });
+});
+ */
 
 app.post('/actualizarCurso',(req,res)=>{
+    
+    Curso.findOneAndUpdate({id : req.body.id},req.body,{new:true, useFindAndModify: false},(err, resultado)=>{
+       console.log(resultado);
+        if(err){
+            return console.log(err)
+        }
+        res.render('login', {
+            nombre: resultado.nombre,
+            des: resultado.des,
+            valor: resultado.valor,
+            modalidad: resultado.modalidad,
+            horas: resultado.horas,
+            estado: 'Cerrado'
+        })
+    });
+});
+app.get('/actualizarCurso',(req,res)=>{
+    res.render('verCursos');
+    /*
+    console.log(req.body.id);
+    funciones.actualizarCurso(req.body.id)
+    Curso.find({}).exec((err, respuesta)=>{
+        if(err){
+            return console.log(err)
+        }
+        //console.log(res);
+        let lista= respuesta;
+       
+        res.render('verCursos', {
+            listado:respuesta
+        })
+        
+    })
+
     if(funciones.actualizarCurso(req.body.id)==false){
         res.render('verCursos',{
             err:"No se pudo actualizar "
@@ -175,6 +255,7 @@ app.post('/actualizarCurso',(req,res)=>{
             err:"Actualizado correctamente"
         });
     }
+    */
 })
 
 //////////////////////////inscritos
@@ -193,7 +274,7 @@ app.get('/inscritos',(req, res)=>{
 app.put('/actualizarUsuarios', (req, response) => {
     console.log(req.body, req.params)
     const { cc } = req.params;
-    const { nombre, email,telefono, tipo } = req.body;
+    const { nombre, email,telefono_cel, tipo } = req.body;
     if(funciones.actualizarUsuarios(req.body) == false){
         res.render('inscritos',{
             err:"no se pudo"
@@ -208,7 +289,7 @@ app.put('/actualizarUsuarios', (req, response) => {
         if(curso.cc == cc){
             usu.nombre = nombre;
             usu.email = email;
-            usu.telefono = telefono;
+            usu.telefono_cel = telefono_cel;
             usu.tipo = tipo;
         }
     });

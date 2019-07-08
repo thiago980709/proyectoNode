@@ -2,6 +2,8 @@ const fs = require('fs');
 const hbs = require('hbs');
 listU = [];
 listC =[];
+listU = [];
+listCursos =[];
 
 function crear(estudiante){
     listar();
@@ -9,7 +11,7 @@ function crear(estudiante){
         cc: estudiante.documento,
         nombre: estudiante.nombre,
         email: estudiante.email,
-        telfono: estudiante.telefono_cel,
+        telefono_cel: estudiante.telefono_cel,
         tipo:"e"
 
     }
@@ -40,7 +42,7 @@ const guardar = () =>{
     })
 }
 
-const actualizar = (nom, asignatura, calificacion ) =>{
+const actualizarE = (nom, asignatura, calificacion ) =>{
     listar();
 
     let encontrado = listE.find(buscar => buscar.nombre == nom );
@@ -113,6 +115,8 @@ const guardarCurso = () =>{
 
 
 hbs.registerHelper('listar',(lista)=>{
+    
+    console.log(lista);
     let texto = `<table id="tb" class="table table-hover" >\
                     <thead>\
                         <tr>\
@@ -125,7 +129,7 @@ hbs.registerHelper('listar',(lista)=>{
                     </thead>\
                     <tbody> `;
 
-    lista.forEach(curso => {
+    listCursos.forEach(curso => {
         texto = texto + 
             '<tr> ' +
             '<td class ="id">' + curso.id + '</td>' +
@@ -136,19 +140,19 @@ hbs.registerHelper('listar',(lista)=>{
 
 
     });
-    
+    listCursos = lista;
     texto = texto + '</tbody></table>'
     return texto;
+    
 })
 
 
 const actualizarCurso = (idCurso) => {
-    listarCurso();
     console.log(idCurso);
     
-    listC.forEach(c => {
+    listCursos.forEach(c => {
         if(c.id == idCurso ){
-         c.estado = 'Cerrado';
+         c.estado = "Cerrado";
          guardarCurso();
         }
     });
@@ -160,6 +164,8 @@ hbs.registerHelper('masInfo',()=>{
      
 })
 hbs.registerHelper('listarDispo',(lista)=>{
+    listCursos=lista
+    console.log(lista);
     let texto = `<table id="tb" class="table table-hover" >\
                     <thead>\
                         <tr>\
@@ -170,8 +176,7 @@ hbs.registerHelper('listarDispo',(lista)=>{
                     </thead>\
                     <tbody> 
                     `;
-
-    lista.forEach(curso => {
+lista.forEach(curso => {
         if(curso.estado == 'disponible'){
             texto = texto + 
             '<tr> ' +
@@ -228,7 +233,7 @@ hbs.registerHelper('listarUsu',(listadoU)=>{
             '<tr> ' +
             '<td><input type = "text"  class = "documento" id="documento" value='+usu.documento+' ></td>' +
             '<td> <input type = "text"  class = "nombre" value='+usu.nombre+' ></td>' +
-            '<td> <input type = "text"  class = "telefono" value='+usu.telefono+' ></td>' +
+            '<td> <input type = "text"  class = "telefono" value='+usu.telefono_cel+' ></td>' +
             '<td> <input type = "text"  class = "email" value='+usu.email+' ></td>' +
             '<td> <input type = "text"  class = "tipo" value='+usu.tipo+' ></td>'+
             '<td><button class="btn btn-primary">Actualizar</button></td>'
@@ -241,7 +246,7 @@ hbs.registerHelper('listarUsu',(listadoU)=>{
     return texto;
 })
 
-hbs.registerHelper('actualizarUsuarios',(cc, nombre, email, telefono, tipo)=>{
+hbs.registerHelper('actualizarUsuarios',(cc, nombre, email, telefono_cel, tipo)=>{
     listar();
 
     let encontrado = listE.find(buscar => buscar.cc == cc );
@@ -252,13 +257,13 @@ hbs.registerHelper('actualizarUsuarios',(cc, nombre, email, telefono, tipo)=>{
         cc=cc;
         nombre=nombre;
         email=email;
-        telefono=telefono;
+        telefono_cel=telefono_cel;
         tipo=tipo;
         guardar();
     }
 })
 
-const actualizarUsuarios = (cc, nombre, email, telefono, tipo) =>{
+const actualizarUsuarios = (cc, nombre, email, telefono_cel, tipo) =>{
     listar();
 
     let encontrado = listE.find(buscar => buscar.cc == cc );
@@ -269,7 +274,7 @@ const actualizarUsuarios = (cc, nombre, email, telefono, tipo) =>{
         cc=cc;
         nombre=nombre;
         email=email;
-        telefono=telefono;
+        telefono_cel=telefono_cel;
         tipo=tipo;
         guardar();
     }
@@ -292,11 +297,10 @@ const eliminarCurso = (id) => {
 };
 var msj;
 const informacion = (id) => {
-    listarCurso();
     let idC = parseInt(id);
-    let cursoId = listC.filter(c =>c.id == idC);
+    let cursoId = listCursos.filter(c =>c.id == idC);
     var yourval = JSON.stringify(cursoId);
-    console.log(cursoId);
+    console.log(listCursos);
     cursoId.forEach(element => {
         msj=(`El curso ${element.nombre}, tiene un 
         valor de ${element.valor}, con modalidad ${element.modalidad}
@@ -319,11 +323,10 @@ hbs.registerHelper('mostrar',()=>{
 
 module.exports = {
     crear,
-    actualizar,
+    actualizarCurso,
     eliminar,
     crearCurso,
     eliminarCurso,
     informacion,
-    actualizarUsuarios,
-    actualizarCurso
+    actualizarUsuarios
 }
