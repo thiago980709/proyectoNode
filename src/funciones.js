@@ -228,15 +228,17 @@ hbs.registerHelper('listarUsu',(listadoU)=>{
                     `;
 
        listadoU.forEach(usu => {
-       
-            texto = texto + 
-            '<tr> ' +
-            '<td><input type = "text"  class = "documento" id="documento" value='+usu.documento+' ></td>' +
-            '<td> <input type = "text"  class = "nombre" value='+usu.nombre+' ></td>' +
-            '<td> <input type = "text"  class = "telefono" value='+usu.telefono_cel+' ></td>' +
-            '<td> <input type = "text"  class = "email" value='+usu.email+' ></td>' +
-            '<td> <input type = "text"  class = "tipo" value='+usu.tipo+' ></td>'+
-            '<td><button class="btn btn-primary">Actualizar</button></td>'
+       if(usu.tipo == 'a'){
+        texto = texto + 
+        '<tr> ' +
+        '<td><input type = "text"  class = "documento" id="documento" value='+usu.documento+' ></td>' +
+        '<td> <input type = "text"  class = "nombre" value='+usu.nombre+' ></td>' +
+        '<td> <input type = "text"  class = "telefono" value='+usu.telefono_cel+' ></td>' +
+        '<td> <input type = "text"  class = "email" value='+usu.email+' ></td>' +
+        '<td> <input type = "text"  class = "tipo" value='+usu.tipo+' ></td>'+
+        '<td><button class="btn btn-primary">Actualizar</button></td>'
+       }
+           
         
         
     });
