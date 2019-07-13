@@ -129,7 +129,7 @@ hbs.registerHelper('listar',(lista)=>{
                     </thead>\
                     <tbody> `;
 
-    listCursos.forEach(curso => {
+      lista.forEach(curso => {
         texto = texto + 
             '<tr> ' +
             '<td class ="id">' + curso.id + '</td>' +
@@ -240,7 +240,7 @@ hbs.registerHelper('comboBoxUsu',()=>{
 })
 
 
-hbs.registerHelper('listarUsu',(listadoU)=>{
+hbs.registerHelper('listarUsu',(listado,listadoU,listadoC, selec)=>{
     let texto = `<table id="tb" class="table table-hover" >\
                     <thead>\
                         <tr>\
@@ -249,28 +249,78 @@ hbs.registerHelper('listarUsu',(listadoU)=>{
                             <th>telefono</th>\
                             <th>email</th>\
                             <th>tipo</th>\
-                            <th>Actualizar</th>\
                         </tr>\
                     </thead>\
                     <tbody> 
                     `;
-       listadoU.forEach(usu => {
-       if(usu.tipo == 'a'){
-        texto = texto + 
-        '<tr> ' +
-        '<td><input type = "text"  class = "documento" id="documento" value='+usu.documento+' ></td>' +
-        '<td> <input type = "text"  class = "nombre" value='+usu.nombre+' ></td>' +
-        '<td> <input type = "text"  class = "telefono" value='+usu.telefono_cel+' ></td>' +
-        '<td> <input type = "text"  class = "email" value='+usu.email+' ></td>' +
-        '<td> <input type = "text"  class = "tipo" value='+usu.tipo+' ></td>'+
-        '<td><button class="btn btn-primary">Actualizar</button></td>'
-       }
-    });
+    listado.forEach(mat=>{
+        if(mat.id == selec){
+            listadoU.forEach(usu=>{
+                if(mat.documento == usu.documento){
+                    texto = texto + 
+                    '<tr> ' +
+                    '<td>'+usu.documento+'</td>' +
+                    '<td>'+usu.nombre+'</td>' +
+                    '<td>'+usu.telefono_cel+'</td>' +
+                    '<td>'+usu.email+'</td>' +
+                    '<td>'+usu.tipo+'</td>'
+                }
+            })
+        }
+    })
+                    /*
+        listadoU.forEach(usu=>{    
+                listadoC.forEach(cur=>{
+                    listado.forEach(mat=>{
+                        if(usu.tipo == 'a'){
+                            if(usu.documento == mat.documento){
+                                if(mat.id == cur.id){
+                                    texto = texto + 
+                                    '<tr> ' +
+                                    '<td>'+usu.documento+'</td>' +
+                                    '<td>'+usu.nombre+'</td>' +
+                                    '<td>'+usu.telefono_cel+'</td>' +
+                                    '<td>'+usu.email+'</td>' +
+                                    '<td>'+usu.tipo+'</td>'+
+                                    '<td>'+cur.nombre+'</td>' 
+                                }
+                            } 
+                        }
+                    })
+                })
+            })
+        */
     texto = texto + '</tbody></table>'
     return texto;
 })
 
-
+hbs.registerHelper('roles',(listado)=>{
+    let texto = `<table id="tb" class="table table-hover" >\
+                    <thead>\
+                        <tr>\
+                            <th>Documento</th>\
+                            <th>nombre</th>\
+                            <th>telefono</th>\
+                            <th>email</th>\
+                            <th>tipo</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody> 
+                    `;
+    listado.forEach(usu=>{
+       
+                    texto = texto + 
+                    '<tr> ' +
+                    '<td>'+usu.documento+'</td>' +
+                    '<td>'+usu.nombre+'</td>' +
+                    '<td>'+usu.telefono_cel+'</td>' +
+                    '<td>'+usu.email+'</td>' +
+                    '<td> <input type = "text"  class = "tipo" value=' + usu.tipo +' ></td>'
+                
+    })
+    texto = texto + '</tbody></table>'
+    return texto;
+})
 
 hbs.registerHelper('actualizarUsuarios',(cc, nombre, email, telefono_cel, tipo)=>{
     listar();

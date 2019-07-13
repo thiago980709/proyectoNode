@@ -45,36 +45,6 @@ app.get('/inscribir', (req, res) => {
 });
 
 app.get('/misCursos', (req, res) => {
-    
-    /*
-    Usuario.findOne({nombre : req.body.nombre}, (err, resultados) =>{
-        console.log(resultados);
-        DOC=resultados.documento;
-        if(resultados!=null){
-            if(bcrypt.compareSync(req.body.password, resultados.password)){
-               if(resultados.tipo == 'a'){
-                    res.render('indexU', {
-                        est: resultados.nombre,
-                        cc: resultados.cc
-                    })
-               }else{
-                    res.render('indexC', {
-                        est: resultados.nombre
-                    })
-                }               
-            }
-            res.render('login', {
-                mensaje: "Error en la contraseña"
-            })
-        }else{
-            res.render('login', {
-                mensaje: "Error en el nombre"
-            })
-        }
-        
-    })
-    */
-   //console.log();
    Matricula.find({}).exec((err, respuesta1) => {
         Curso.find({}).exec((err, respuesta2) => {
             if (err) {
@@ -85,11 +55,35 @@ app.get('/misCursos', (req, res) => {
                 doc:DOC,
                 cursos:respuesta2
             });
-
         });
    });
-    
-    
+});
+
+app.post('/eliminarIns',(req, res)=>{
+    console.log('---------------------------');
+    console.log(req.body);
+    Matricula.findOneAndDelete({id : req.body.id},req.body, (err, resultados)=>{
+      if(err){
+          return console.log(err)
+      }
+      console.log(resultados);
+        res.render('index', {
+                nombre: 'Se eliminó inscripción'+resultados
+        })
+    })
+});
+app.post('/cordEliminarIns',(req, res)=>{
+    console.log('---------------------------');
+    console.log(req.body);
+    Matricula.findOneAndDelete({documento : req.body.documento},req.body, (err, resultados)=>{
+      if(err){
+          return console.log(err)
+      }
+      console.log(resultados);
+        res.render('index', {
+                nombre: 'Se eliminó inscripción'+resultados
+        })
+    })
 });
 
 app.get('/registro', (req, res) => {
@@ -188,21 +182,8 @@ app.post('/in', (req, res) => {
             res.render('login', {
                 mensaje: "Error en el nombre"
             })
-        }
-        
+        }  
     })
-    /*
-    console.log(req.body);
-    if (req.body.documento == 123456) {
-        res.render('indexC', {
-            est: req.body.nombre
-        });
-    } else {
-        res.render('indexU', {
-            est: req.body.nombre
-        });
-    }
-    */
 });
 
 app.get('/verCursos', (req, res) => {
@@ -395,18 +376,50 @@ app.get('/actualizarCurso', (req, res) => {
     }
     */
 })
-
-//////////////////////////inscritos
-app.get('/inscritos', (req, res) => {
+app.get('/usuarios', (req, res) => {
     Usuario.find({}).exec((err, respuesta) => {
         if (err) {
             return console.log(err)
         }
-        res.render('inscritos', {
-            listadoU: respuesta
+        res.render('usuarios', {
+            listado: respuesta
         })
-    })
 
+    })
+});
+//////////////////////////inscritos
+app.get('/inscritos', (req, res) => {
+    console.log('********************');
+    console.log(req.query.id);
+    Matricula.find({}).exec((err, respuesta1) => {
+        Usuario.find({}).exec((err, respuesta2) => {
+            Curso.find({}).exec((err, respuesta3) => {
+                if (err) {
+                    return console.log(err)
+                }
+                res.render('inscritos', {
+                    listado: respuesta1,
+                    listadoU:respuesta2,
+                    listadoC:respuesta3,
+                    selec: req.query.id
+                });
+            });
+        });
+   });
+});
+
+app.get('/cursosInscritos', (req, res) => {
+    Curso.find({}).exec((err, respuesta) => {
+        if (err) {
+            return console.log(err)
+        }
+        let lista = respuesta;
+
+        res.render('cursosInscritos', {
+            listado: respuesta
+        })
+
+    })
 });
 
 app.put('/actualizarUsuarios', (req, response) => {
