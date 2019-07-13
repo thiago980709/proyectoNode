@@ -11,6 +11,7 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const Curso = require('./../src/models/cursos');
 const Usuario = require('./../src/models/usuarios');
+const Matricula = require('./../src/models/matriculas');
 
 const directoriopublico = path.join(__dirname, '../public');
 const directoriopartials = path.join(__dirname, '../partials');
@@ -25,7 +26,7 @@ app.use('/js', express.static(dirNode_modules + '/popper.js/dist'));
 app.use('/js', express.static(dirNode_modules + '/bootstrap/dist/js'));
 app.set('view engine', 'hbs');
 
-
+var doc = process.env.DOC;
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -42,11 +43,60 @@ app.get('/login', (req, res) => {
 app.get('/inscribir', (req, res) => {
     res.render('crearCurso');
 });
+
+app.get('/misCursos', (req, res) => {
+    
+    /*
+    Usuario.findOne({nombre : req.body.nombre}, (err, resultados) =>{
+        console.log(resultados);
+        DOC=resultados.documento;
+        if(resultados!=null){
+            if(bcrypt.compareSync(req.body.password, resultados.password)){
+               if(resultados.tipo == 'a'){
+                    res.render('indexU', {
+                        est: resultados.nombre,
+                        cc: resultados.cc
+                    })
+               }else{
+                    res.render('indexC', {
+                        est: resultados.nombre
+                    })
+                }               
+            }
+            res.render('login', {
+                mensaje: "Error en la contraseña"
+            })
+        }else{
+            res.render('login', {
+                mensaje: "Error en el nombre"
+            })
+        }
+        
+    })
+    */
+   //console.log();
+   Matricula.find({}).exec((err, respuesta1) => {
+        Curso.find({}).exec((err, respuesta2) => {
+            if (err) {
+                return console.log(err)
+            }
+            res.render('misCursos', {
+                listado: respuesta1,
+                doc:DOC,
+                cursos:respuesta2
+            });
+
+        });
+   });
+    
+    
+});
+
 app.get('/registro', (req, res) => {
     res.render('registro');
 });
 app.post('/indexU', (req, res) => {
-
+    DOC =  req.body.documento;
     let usuario = new Usuario({
         nombre: req.body.nombre,
         password: bcrypt.hashSync(req.body.password, 10),
@@ -70,6 +120,7 @@ app.post('/indexU', (req, res) => {
 });
 
 app.post('/ingresar',(req, res) => {
+    DOC= req.body.documento;
     Usuario.findOne({nombre : req.body.nombre}, (err, resultados =>{
         if(err){
             return console.log(err)
@@ -113,14 +164,16 @@ app.post('/curso', (req, res) => {
     })
 })
 app.post('/in', (req, res) => {
-  
+    
     Usuario.findOne({nombre : req.body.nombre}, (err, resultados) =>{
         console.log(resultados);
+        DOC=resultados.documento;
         if(resultados!=null){
             if(bcrypt.compareSync(req.body.password, resultados.password)){
                if(resultados.tipo == 'a'){
                     res.render('indexU', {
-                        est: resultados.nombre
+                        est: resultados.nombre,
+                        cc: resultados.cc
                     })
                }else{
                     res.render('indexC', {
@@ -196,6 +249,42 @@ app.post('/eliminar', (req, res) => {
 
         });
     }
+});
+
+app.post('/matricula', (req, res) => {
+    
+    console.log("-------------------------------------");
+    funciones.matricula(req.body.id);
+    Curso.find({}).exec((err, respuesta) => {
+        if (err) {
+            return console.log(err)
+        }
+        //console.log(res);
+        let lista = respuesta;
+
+        res.render('verCursosI', {
+            listado: respuesta
+        })
+
+    })
+
+    let matricula = new Matricula({
+        id: req.body.id,
+        documento: DOC,
+        
+    })
+    
+    matricula.save((err, resultado) => {
+        if (err) {
+            res.render('verCursosI', {
+                err: err
+            })
+        }
+        res.render('verCursosI', {
+            listado: resultado
+        })
+    })
+    
 });
 
 app.post('/informacion', (req, res) => {

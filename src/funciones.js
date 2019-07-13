@@ -164,7 +164,7 @@ hbs.registerHelper('masInfo',()=>{
      
 })
 hbs.registerHelper('listarDispo',(lista)=>{
-    listCursos=lista
+    listCursos=lista;
     console.log(lista);
     let texto = `<table id="tb" class="table table-hover" >\
                     <thead>\
@@ -176,7 +176,7 @@ hbs.registerHelper('listarDispo',(lista)=>{
                     </thead>\
                     <tbody> 
                     `;
-lista.forEach(curso => {
+    lista.forEach(curso => {
         if(curso.estado == 'disponible'){
             texto = texto + 
             '<tr> ' +
@@ -192,19 +192,47 @@ lista.forEach(curso => {
     return texto;
 })
 
+hbs.registerHelper('listarMisCur',(lista, doc, cursos)=>{
+    console.log(doc);
+    let texto = `<table id="tb" class="table table-hover" >\
+                    <thead>\
+                        <tr>\
+                            <th>ID</th>\
+                            <th>Nombre</th>\
+                            <th>Descripción</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody> 
+                    `;
+    lista.forEach(mat => {
+        if(mat.documento == doc){
+            cursos.forEach(cur=>{
+                if(mat.id == cur.id){
+                    texto = texto + 
+                    '<tr> ' +
+                    '<td>' + cur.id + '</td>' +
+                    '<td> ' + cur.nombre + '</td>' +
+                    '<td> ' + cur.des + '</td>'
+                }
+            })
+        }
+    });
+    texto = texto + '</tbody></table>'
+    return texto;
+})
+
 hbs.registerHelper('comboBoxUsu',()=>{
-    listar();
     let texto;
-    listU.forEach(usu => {
+    listCursos.forEach(cur => {
             texto = texto + 
             '<div class="dropdown">\
   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
     Dropdown</button>\
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
-            <a>'+ usu.cc +'</a>';
+            <a>'+ cur.nombre +'</a>';
             
         
-        console.log(usu.cc+'-');
+        console.log(cur.nombre+'-');
     });
    
     texto = texto + '</div></div>'
@@ -226,7 +254,6 @@ hbs.registerHelper('listarUsu',(listadoU)=>{
                     </thead>\
                     <tbody> 
                     `;
-
        listadoU.forEach(usu => {
        if(usu.tipo == 'a'){
         texto = texto + 
@@ -238,15 +265,12 @@ hbs.registerHelper('listarUsu',(listadoU)=>{
         '<td> <input type = "text"  class = "tipo" value='+usu.tipo+' ></td>'+
         '<td><button class="btn btn-primary">Actualizar</button></td>'
        }
-           
-        
-        
     });
-    
-   
     texto = texto + '</tbody></table>'
     return texto;
 })
+
+
 
 hbs.registerHelper('actualizarUsuarios',(cc, nombre, email, telefono_cel, tipo)=>{
     listar();
@@ -288,8 +312,6 @@ hbs.registerHelper('buscar',(id)=>{
     return texto.nombre;
 })
 
-
-
 const eliminarCurso = (id) => {
     listarCurso();
     let idC = parseInt(id);
@@ -313,6 +335,17 @@ const informacion = (id) => {
         return msj;
 };
 
+const matricula = (id) => {
+    let idC = parseInt(id);
+    let cursoId = listCursos.filter(c =>c.id == idC);
+    console.log(listCursos);
+    cursoId.forEach(element => {
+        msj=(`Se ha matriculado satisfactoriamente a  ${element.nombre} `);
+    });
+    
+        return msj;
+};
+
 hbs.registerHelper('mostrar',()=>{
     console.log(msj);
     let t = `<div class="alert alert-primary" role="alert">\
@@ -330,5 +363,6 @@ module.exports = {
     crearCurso,
     eliminarCurso,
     informacion,
-    actualizarUsuarios
+    actualizarUsuarios,
+    matricula
 }
