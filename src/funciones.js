@@ -315,7 +315,7 @@ hbs.registerHelper('roles',(listado)=>{
                     '<td>'+usu.nombre+'</td>' +
                     '<td>'+usu.telefono_cel+'</td>' +
                     '<td>'+usu.email+'</td>' +
-                    '<td> <input type = "text"  class = "tipo" value=' + usu.tipo +' ></td>'
+                    '<td> <input type = "text" name="newTipo" id="newTipo" class = "tipo" value=' + usu.tipo +' ></td>'
                 
     })
     texto = texto + '</tbody></table>'

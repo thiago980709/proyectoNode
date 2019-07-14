@@ -86,6 +86,27 @@ app.post('/cordEliminarIns',(req, res)=>{
     })
 });
 
+app.get('/actualizarUsu',(req, res)=>{
+    res.render('actualizarUsu');
+})
+
+app.post('/actualizarUsu',(req, res)=>{
+      Usuario.findOneAndUpdate({documento : req.body.documento},req.body,{new:true, useFindAndModify: false},(err, resultados)=>{
+        console.log(resultados);
+      console.log('---------------------------');
+        res.render('index', {
+                nombre:resultados.nombre,
+                password:resultados.password,
+                documento:resultados.documento,
+                email:resultados.email,
+                telefono_cel:resultados.telefono_cel,
+                tipo:'p'
+        })
+      })
+      
+   
+});
+
 app.get('/registro', (req, res) => {
     res.render('registro');
 });
