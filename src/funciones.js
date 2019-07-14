@@ -172,6 +172,7 @@ hbs.registerHelper('listarDispo',(lista)=>{
                             <th>ID</th>\
                             <th>Curso</th>\
                             <th>Descripción</th>\
+                            <th>Docente</th>\
                         </tr>\
                     </thead>\
                     <tbody> 
@@ -182,7 +183,8 @@ hbs.registerHelper('listarDispo',(lista)=>{
             '<tr> ' +
             '<td>' + curso.id + '</td>' +
             '<td> ' + curso.nombre + '</td>' +
-            '<td> ' + curso.des + '</td>'
+            '<td> ' + curso.des + '</td>' +
+            '<td> ' + curso.docente + '</td>'
         }
         
     });

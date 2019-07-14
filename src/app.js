@@ -67,7 +67,7 @@ app.post('/eliminarIns', (req, res) => {
             return console.log(err)
         }
         console.log(resultados);
-        res.render('index', {
+        res.render('indexU', {
             nombre: 'Se eliminó inscripción' + resultados
         })
     })
@@ -80,7 +80,7 @@ app.post('/cordEliminarIns', (req, res) => {
             return console.log(err)
         }
         console.log(resultados);
-        res.render('index', {
+        res.render('indexC', {
             nombre: 'Se eliminó inscripción' + resultados
         })
     })
@@ -119,7 +119,7 @@ app.post('/indexU', (req, res) => {
         documento: req.body.documento,
         email: req.body.email,
         telefono_cel: req.body.telefono_cel,
-        tipo: 'a'
+        tipo: 'aspirante'
     })
     //console.log(req.body);
     usuario.save((err, resultado) => {
@@ -270,7 +270,7 @@ app.post('/matricula', (req, res) => {
         //console.log(res);
         let lista = respuesta;
 
-        res.render('verCursosI', {
+        res.render('indexU', {
             listado: respuesta
         })
 
