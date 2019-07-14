@@ -28,6 +28,9 @@ const cursoSchema = new Schema({
     "estado":{
         type : String,
         require:true
+    },
+    "docente":{
+        type : String
     }
 })
 

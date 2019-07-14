@@ -221,6 +221,36 @@ hbs.registerHelper('listarMisCur',(lista, doc, cursos)=>{
     return texto;
 })
 
+hbs.registerHelper('listarProf',(lista, docente)=>{
+    listCursos=lista;
+    console.log(lista);
+    let texto = `<table id="tb" class="table table-hover" >\
+                    <thead>\
+                        <tr>\
+                            <th>ID</th>\
+                            <th>Curso</th>\
+                            <th>Descripción</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody> 
+                    `;
+    lista.forEach(curso => {
+        if(curso.docente == docente){
+            if(curso.estado == 'disponible'){
+                texto = texto + 
+                '<tr> ' +
+                '<td>' + curso.id + '</td>' +
+                '<td> ' + curso.nombre + '</td>' +
+                '<td> ' + curso.des + '</td>'
+            }
+        }
+    });
+    
+   
+    texto = texto + '</tbody></table>'
+    return texto;
+})
+
 hbs.registerHelper('comboBoxUsu',()=>{
     let texto;
     listCursos.forEach(cur => {
@@ -315,9 +345,37 @@ hbs.registerHelper('roles',(listado)=>{
                     '<td>'+usu.nombre+'</td>' +
                     '<td>'+usu.telefono_cel+'</td>' +
                     '<td>'+usu.email+'</td>' +
-                    '<td> <input type = "text" name="newTipo" id="newTipo" class = "tipo" value=' + usu.tipo +' ></td>'
+                    '<td>'+ usu.tipo +'</td>'
                 
     })
+    texto = texto + '</tbody></table>'
+    return texto;
+})
+
+hbs.registerHelper('actualizarUsu',(nombre,documento, email,telefono_cel,tipo)=>{
+    let texto = `<table id="tb" class="table table-hover" >\
+                    <thead>\
+                        <tr>\
+                            <th>Documento</th>\
+                            <th>nombre</th>\
+                            <th>telefono</th>\
+                            <th>email</th>\
+                            <th>tipo</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody> 
+                    `;
+    
+                    texto = texto + 
+                    '<tr>' +
+                    '<td> <input type = "text" name="documento" id="documento" class = "tipo" value=' + documento +' ></td>'+
+                    '<td> <input type = "text" name="nombre" id="nombre" class = "tipo" value=' + nombre +' ></td>'+
+                    '<td> <input type = "text" name="telefono_cel" id="telefono_cel" class = "tipo" value=' + telefono_cel +' ></td>'+
+                    '<td> <input type = "text" name="email" id="email" class = "tipo" value=' + email +' ></td>'+
+                    '<td> <input type = "text" name="tipo" id="tipo" class = "tipo" value=' + tipo +' ></td>'
+                    +'</tr>' 
+                
+   
     texto = texto + '</tbody></table>'
     return texto;
 })

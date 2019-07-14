@@ -45,73 +45,76 @@ app.get('/inscribir', (req, res) => {
 });
 
 app.get('/misCursos', (req, res) => {
-   Matricula.find({}).exec((err, respuesta1) => {
+    Matricula.find({}).exec((err, respuesta1) => {
         Curso.find({}).exec((err, respuesta2) => {
             if (err) {
                 return console.log(err)
             }
             res.render('misCursos', {
                 listado: respuesta1,
-                doc:DOC,
-                cursos:respuesta2
+                doc: DOC,
+                cursos: respuesta2
             });
         });
-   });
+    });
 });
 
-app.post('/eliminarIns',(req, res)=>{
+app.post('/eliminarIns', (req, res) => {
     console.log('---------------------------');
     console.log(req.body);
-    Matricula.findOneAndDelete({id : req.body.id},req.body, (err, resultados)=>{
-      if(err){
-          return console.log(err)
-      }
-      console.log(resultados);
-        res.render('index', {
-                nombre: 'Se eliminó inscripción'+resultados
-        })
-    })
-});
-app.post('/cordEliminarIns',(req, res)=>{
-    console.log('---------------------------');
-    console.log(req.body);
-    Matricula.findOneAndDelete({documento : req.body.documento},req.body, (err, resultados)=>{
-      if(err){
-          return console.log(err)
-      }
-      console.log(resultados);
-        res.render('index', {
-                nombre: 'Se eliminó inscripción'+resultados
-        })
-    })
-});
-
-app.get('/actualizarUsu',(req, res)=>{
-    res.render('actualizarUsu');
-})
-
-app.post('/actualizarUsu',(req, res)=>{
-      Usuario.findOneAndUpdate({documento : req.body.documento},req.body,{new:true, useFindAndModify: false},(err, resultados)=>{
+    Matricula.findOneAndDelete({ id: req.body.id }, req.body, (err, resultados) => {
+        if (err) {
+            return console.log(err)
+        }
         console.log(resultados);
-      console.log('---------------------------');
         res.render('index', {
-                nombre:resultados.nombre,
-                password:resultados.password,
-                documento:resultados.documento,
-                email:resultados.email,
-                telefono_cel:resultados.telefono_cel,
-                tipo:'p'
+            nombre: 'Se eliminó inscripción' + resultados
         })
-      })
-      
-   
+    })
+});
+app.post('/cordEliminarIns', (req, res) => {
+    console.log('---------------------------');
+    console.log(req.body);
+    Matricula.findOneAndDelete({ documento: req.body.documento }, req.body, (err, resultados) => {
+        if (err) {
+            return console.log(err)
+        }
+        console.log(resultados);
+        res.render('index', {
+            nombre: 'Se eliminó inscripción' + resultados
+        })
+    })
+});
+
+app.get('/actualizarUsu', (req, res) => {
+    res.render('actualizarUsu')
+});
+
+app.post('/actualizarUsu', (req, res) => {
+    Usuario.findOneAndUpdate({ documento: req.body.documento }, req.body, { new: true, useFindAndModify: false }, (err, resultados) => {
+        if (err) {
+            return console.log(err)
+        }
+        console.log(resultados);
+        console.log('---------------------------');
+        console.log(req.body);
+        res.render('actualizarUsu', {
+            nombre: resultados.nombre,
+            documento: resultados.documento,
+            email: resultados.email,
+            telefono_cel: resultados.telefono_cel,
+            tipo: resultados.tipo
+        })
+    })
+
+
 });
 
 app.get('/registro', (req, res) => {
     res.render('registro');
 });
 app.post('/indexU', (req, res) => {
-    DOC =  req.body.documento;
+    DOC = req.body.documento;
     let usuario = new Usuario({
         nombre: req.body.nombre,
         password: bcrypt.hashSync(req.body.password, 10),
@@ -134,24 +137,24 @@ app.post('/indexU', (req, res) => {
 
 });
 
-app.post('/ingresar',(req, res) => {
-    DOC= req.body.documento;
-    Usuario.findOne({nombre : req.body.nombre}, (err, resultados =>{
-        if(err){
+app.post('/ingresar', (req, res) => {
+    DOC = req.body.documento;
+    Usuario.findOne({ nombre: req.body.nombre }, (err, resultados => {
+        if (err) {
             return console.log(err)
         }
-        if(!resultado){
+        if (!resultado) {
             res.render('ingresar', {
                 mensaje: "Usuario no encontrado"
             })
         }
-        if(!bcrypt.compareSync(req.body.password, resultados.password)){
+        if (!bcrypt.compareSync(req.body.password, resultados.password)) {
             res.render('ingresar', {
                 mensaje: "Contraseña no es correcta"
             })
         }
         res.render('ingresar', {
-                mensaje: "Bienvenido" + resultados.nombre
+            mensaje: "Bienvenido" + resultados.nombre
         })
     }))
 })
@@ -179,31 +182,36 @@ app.post('/curso', (req, res) => {
     })
 })
 app.post('/in', (req, res) => {
-    
-    Usuario.findOne({nombre : req.body.nombre}, (err, resultados) =>{
+
+    Usuario.findOne({ nombre: req.body.nombre }, (err, resultados) => {
         console.log(resultados);
-        DOC=resultados.documento;
-        if(resultados!=null){
-            if(bcrypt.compareSync(req.body.password, resultados.password)){
-               if(resultados.tipo == 'a'){
+        DOC = resultados.documento;
+        if (resultados != null) {
+            if (bcrypt.compareSync(req.body.password, resultados.password)) {
+                if (resultados.tipo == 'aspirante') {
                     res.render('indexU', {
                         est: resultados.nombre,
                         cc: resultados.cc
                     })
-               }else{
+                } else if(resultados.tipo == 'docente') {
+                    res.render('indexD', {
+                        est: resultados.nombre
+                    })
+                }else{
                     res.render('indexC', {
                         est: resultados.nombre
                     })
-                }               
+                }
+
             }
             res.render('login', {
                 mensaje: "Error en la contraseña"
             })
-        }else{
+        } else {
             res.render('login', {
                 mensaje: "Error en el nombre"
             })
-        }  
+        }
     })
 });
 
@@ -254,7 +262,7 @@ app.post('/eliminar', (req, res) => {
 });
 
 app.post('/matricula', (req, res) => {
-    
+
     console.log("-------------------------------------");
     funciones.matricula(req.body.id);
     Curso.find({}).exec((err, respuesta) => {
@@ -273,9 +281,9 @@ app.post('/matricula', (req, res) => {
     let matricula = new Matricula({
         id: req.body.id,
         documento: DOC,
-        
+
     })
-    
+
     matricula.save((err, resultado) => {
         if (err) {
             res.render('verCursosI', {
@@ -286,7 +294,7 @@ app.post('/matricula', (req, res) => {
             listado: resultado
         })
     })
-    
+
 });
 
 app.post('/informacion', (req, res) => {
@@ -420,13 +428,13 @@ app.get('/inscritos', (req, res) => {
                 }
                 res.render('inscritos', {
                     listado: respuesta1,
-                    listadoU:respuesta2,
-                    listadoC:respuesta3,
+                    listadoU: respuesta2,
+                    listadoC: respuesta3,
                     selec: req.query.id
                 });
             });
         });
-   });
+    });
 });
 
 app.get('/cursosInscritos', (req, res) => {
@@ -467,6 +475,25 @@ app.put('/actualizarUsuarios', (req, response) => {
     });
     response.json('Successfully update');
 });
+
+//////////////////////////////////////////
+//////// DOCENTES
+//////////////////////////////////////////
+
+app.get('/cursosInscritosProf',(req,res)=>{
+    Curso.find({}).exec((err, respuesta) => {
+        if (err) {
+            return console.log(err)
+        }
+        let lista = respuesta;
+
+        res.render('cursosInscritosProf', {
+            listado: respuesta,
+            docente: DOC
+        })
+
+    })
+})
 
 mongoose.connect('mongodb://localhost:27017/cursos', { useNewUrlParser: true }, (err, res) => {
     if (err) {
