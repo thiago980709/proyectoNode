@@ -106,8 +106,6 @@ app.post('/actualizarUsu', (req, res) => {
             tipo: resultados.tipo
         })
     })
-
-
 });
 
 app.get('/registro', (req, res) => {
@@ -494,6 +492,31 @@ app.get('/cursosInscritosProf',(req,res)=>{
 
     })
 })
+
+app.get('/cerrar', (req, res) => {
+    res.render('cerrar')
+});
+
+app.post('/cerrar', (req, res) => {
+    Curso.findOneAndUpdate({ id: req.body.id }, req.body, { new: true, useFindAndModify: false }, (err, resultados) => {
+        if (err) {
+            return console.log(err)
+        }
+        console.log(resultados);
+        console.log('---------------------------');
+        console.log(req.body);
+        res.render('indexC', {
+            nombre: resultados.nombre,
+            documento: resultados.documento,
+            email: resultados.email,
+            telefono_cel: resultados.telefono_cel,
+            tipo: resultados.tipo,
+            docente: req.body.docente
+        })
+    })
+
+
+});
 
 mongoose.connect('mongodb://localhost:27017/cursos', { useNewUrlParser: true }, (err, res) => {
     if (err) {
