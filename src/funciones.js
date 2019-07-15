@@ -2,8 +2,8 @@ const fs = require('fs');
 const hbs = require('hbs');
 listU = [];
 listC =[];
-listM = [];
-l = [];
+listU = [];
+listCursos =[];
 
 function crear(estudiante){
     listar();
@@ -11,7 +11,7 @@ function crear(estudiante){
         cc: estudiante.documento,
         nombre: estudiante.nombre,
         email: estudiante.email,
-        telfono: estudiante.telefono_cel,
+        telefono_cel: estudiante.telefono_cel,
         tipo:"e"
 
     }
@@ -42,7 +42,7 @@ const guardar = () =>{
     })
 }
 
-const actualizar = (nom, asignatura, calificacion ) =>{
+const actualizarE = (nom, asignatura, calificacion ) =>{
     listar();
 
     let encontrado = listE.find(buscar => buscar.nombre == nom );
@@ -129,80 +129,9 @@ const guardarCurso = () =>{
 
 
 
-const matricular =(matricula) =>{
-    listarMatriculas();
-    listarCurso();
-    listar();
-    let m = {
-        idCurso: parseInt(matricula.idcur),
-        idest: matricula.idEst
-    }
-    let estd = listU.find(e => e.cc == matricula.idEst);
-    let curd = listC.find(c => c.id == matricula.idcur);
-    let duplicado = listM.find(ma => ma.idCurso == matricula.idcur && ma.idest == matricula.idEst);
-    if(!duplicado){
-        if(estd){
-            if(curd){
-                if(curd.estado == "disponible"){
-                    listM.push(m);
-                    guardarMatricula();
-                }else{
-                    return "ND"
-                }
-                
-            }else{
-                return "NC"
-            }
-        }else{
-            return "NE"
-        }
-    }else{
-        return false;
-    }
-
-}
-
-const listarMatriculas = () =>{
-    try{
-        listM = require('../matricula');
-    }catch(error){
-        listM = [];
-    }
+hbs.registerHelper('listar',(lista)=>{
     
-}
-const guardarMatricula = () =>{
-    let datos = JSON.stringify(listM);
-    fs.writeFile('matricula.json',datos,(err)=>{
-        if(err) throw (err);
-        console.log('Archivo guardado con exito');
-    })
-}
-
-const mostrarInscritos = (idCurso) => {
-    listarMatriculas();
-    listar();
-
-    let lstEstudiantes = [];
-
-    let estudiantes = listM.filter(e => e.idCurso == idCurso)
-
-    estudiantes.forEach(est => {
-        let e = listU.find(u => u.cc == est.idest);
-        lstEstudiantes.push(e);
-    });
-    return lstEstudiantes;
-    
-}
-
-const eliminarInscrito = (idEst) => {
-    listarMatriculas();
-    let nuevo = listM.filter(m => m.idest != idEst);
-    listM = nuevo;
-    guardarMatricula();
-}
-
-hbs.registerHelper('listar',()=>{
-    listarCurso();
+    console.log(lista);
     let texto = `<table id="tb" class="table table-hover" >\
                     <thead>\
                         <tr>\
@@ -215,7 +144,7 @@ hbs.registerHelper('listar',()=>{
                     </thead>\
                     <tbody> `;
 
-    listC.forEach(curso => {
+      lista.forEach(curso => {
         texto = texto + 
             '<tr> ' +
             '<td class ="id">' + curso.id + '</td>' +
@@ -226,9 +155,10 @@ hbs.registerHelper('listar',()=>{
 
 
     });
-    
+    listCursos = lista;
     texto = texto + '</tbody></table>'
     return texto;
+    
 })
 
 hbs.registerHelper('listarCursosInscritos', () => {
@@ -276,12 +206,11 @@ hbs.registerHelper('listarCursosInscritos', () => {
 
 
 const actualizarCurso = (idCurso) => {
-    listarCurso();
     console.log(idCurso);
     
-    listC.forEach(c => {
+    listCursos.forEach(c => {
         if(c.id == idCurso ){
-         c.estado = 'Cerrado';
+         c.estado = "Cerrado";
          guardarCurso();
         }
     });
@@ -292,9 +221,69 @@ hbs.registerHelper('masInfo',()=>{
     console.log(msj);
      
 })
+hbs.registerHelper('listarDispo',(lista)=>{
+    listCursos=lista;
+    console.log(lista);
+    let texto = `<table id="tb" class="table table-hover" >\
+                    <thead>\
+                        <tr>\
+                            <th>ID</th>\
+                            <th>Curso</th>\
+                            <th>Descripción</th>\
+                            <th>Docente</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody> 
+                    `;
+    lista.forEach(curso => {
+        if(curso.estado == 'disponible'){
+            texto = texto + 
+            '<tr> ' +
+            '<td>' + curso.id + '</td>' +
+            '<td> ' + curso.nombre + '</td>' +
+            '<td> ' + curso.des + '</td>' +
+            '<td> ' + curso.docente + '</td>'
+        }
+        
+    });
+    
+   
+    texto = texto + '</tbody></table>'
+    return texto;
+})
 
-hbs.registerHelper('listarDispo',()=>{
-    listarCurso();
+hbs.registerHelper('listarMisCur',(lista, doc, cursos)=>{
+    console.log(doc);
+    let texto = `<table id="tb" class="table table-hover" >\
+                    <thead>\
+                        <tr>\
+                            <th>ID</th>\
+                            <th>Nombre</th>\
+                            <th>Descripción</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody> 
+                    `;
+    lista.forEach(mat => {
+        if(mat.documento == doc){
+            cursos.forEach(cur=>{
+                if(mat.id == cur.id){
+                    texto = texto + 
+                    '<tr> ' +
+                    '<td>' + cur.id + '</td>' +
+                    '<td> ' + cur.nombre + '</td>' +
+                    '<td> ' + cur.des + '</td>'
+                }
+            })
+        }
+    });
+    texto = texto + '</tbody></table>'
+    return texto;
+})
+
+hbs.registerHelper('listarProf',(lista, docente)=>{
+    listCursos=lista;
+    console.log(lista);
     let texto = `<table id="tb" class="table table-hover" >\
                     <thead>\
                         <tr>\
@@ -305,16 +294,16 @@ hbs.registerHelper('listarDispo',()=>{
                     </thead>\
                     <tbody> 
                     `;
-
-    listC.forEach(curso => {
-        if(curso.estado == 'disponible'){
-            texto = texto + 
-            '<tr> ' +
-            '<td>' + curso.id + '</td>' +
-            '<td> ' + curso.nombre + '</td>' +
-            '<td> ' + curso.des + '</td>'
+    lista.forEach(curso => {
+        if(curso.docente == docente){
+            if(curso.estado == 'disponible'){
+                texto = texto + 
+                '<tr> ' +
+                '<td>' + curso.id + '</td>' +
+                '<td> ' + curso.nombre + '</td>' +
+                '<td> ' + curso.des + '</td>'
+            }
         }
-        
     });
     
    
@@ -323,19 +312,17 @@ hbs.registerHelper('listarDispo',()=>{
 })
 
 hbs.registerHelper('comboBoxUsu',()=>{
-    listar();
     let texto;
-    listU.forEach(usu => {
+    listCursos.forEach(cur => {
             texto = texto + 
-            `<div class="dropdown">\
+            '<div class="dropdown">\
   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
     Dropdown</button>\
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">'+usu.cc+'</a>`;
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
+            <a>'+ cur.nombre +'</a>';
             
         
-        console.log(usu.cc+'-');
+        console.log(cur.nombre+'-');
     });
    
     texto = texto + '</div></div>'
@@ -343,42 +330,117 @@ hbs.registerHelper('comboBoxUsu',()=>{
 })
 
 
-hbs.registerHelper('listarUsu',()=>{
-    listar();
+hbs.registerHelper('listarUsu',(listado,listadoU,listadoC, selec)=>{
     let texto = `<table id="tb" class="table table-hover" >\
                     <thead>\
                         <tr>\
-                            <th>cc</th>\
+                            <th>Documento</th>\
                             <th>nombre</th>\
                             <th>telefono</th>\
                             <th>email</th>\
                             <th>tipo</th>\
-                            <th>Actualizar</th>\
                         </tr>\
                     </thead>\
                     <tbody> 
                     `;
+    listado.forEach(mat=>{
+        if(mat.id == selec){
+            listadoU.forEach(usu=>{
+                if(mat.documento == usu.documento){
+                    texto = texto + 
+                    '<tr> ' +
+                    '<td>'+usu.documento+'</td>' +
+                    '<td>'+usu.nombre+'</td>' +
+                    '<td>'+usu.telefono_cel+'</td>' +
+                    '<td>'+usu.email+'</td>' +
+                    '<td>'+usu.tipo+'</td>'
+                }
+            })
+        }
+    })
+                    /*
+        listadoU.forEach(usu=>{    
+                listadoC.forEach(cur=>{
+                    listado.forEach(mat=>{
+                        if(usu.tipo == 'a'){
+                            if(usu.documento == mat.documento){
+                                if(mat.id == cur.id){
+                                    texto = texto + 
+                                    '<tr> ' +
+                                    '<td>'+usu.documento+'</td>' +
+                                    '<td>'+usu.nombre+'</td>' +
+                                    '<td>'+usu.telefono_cel+'</td>' +
+                                    '<td>'+usu.email+'</td>' +
+                                    '<td>'+usu.tipo+'</td>'+
+                                    '<td>'+cur.nombre+'</td>' 
+                                }
+                            } 
+                        }
+                    })
+                })
+            })
+        */
+    texto = texto + '</tbody></table>'
+    return texto;
+})
 
-    listU.forEach(usu => {
+hbs.registerHelper('roles',(listado)=>{
+    let texto = `<table id="tb" class="table table-hover" >\
+                    <thead>\
+                        <tr>\
+                            <th>Documento</th>\
+                            <th>nombre</th>\
+                            <th>telefono</th>\
+                            <th>email</th>\
+                            <th>tipo</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody> 
+                    `;
+    listado.forEach(usu=>{
        
-            texto = texto + 
-            '<tr> ' +
-            '<td><input type = "text"  class = "cc" id="cc" value='+usu.cc+' ></td>' +
-            '<td> <input type = "text"  class = "nombre" value='+usu.nombre+' ></td>' +
-            '<td> <input type = "text"  class = "telefono" value='+usu.telefono+' ></td>' +
-            '<td> <input type = "text"  class = "email" value='+usu.email+' ></td>' +
-            '<td> <input type = "text"  class = "tipo" value='+usu.tipo+' ></td>'+
-            '<td><button class="btn btn-primary">Actualizar</button></td>'
-        
-        
-    });
+                    texto = texto + 
+                    '<tr> ' +
+                    '<td>'+usu.documento+'</td>' +
+                    '<td>'+usu.nombre+'</td>' +
+                    '<td>'+usu.telefono_cel+'</td>' +
+                    '<td>'+usu.email+'</td>' +
+                    '<td>'+ usu.tipo +'</td>'
+                
+    })
+    texto = texto + '</tbody></table>'
+    return texto;
+})
+
+hbs.registerHelper('actualizarUsu',(nombre,documento, email,telefono_cel,tipo)=>{
+    let texto = `<table id="tb" class="table table-hover" >\
+                    <thead>\
+                        <tr>\
+                            <th>Documento</th>\
+                            <th>nombre</th>\
+                            <th>telefono</th>\
+                            <th>email</th>\
+                            <th>tipo</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody> 
+                    `;
     
+                    texto = texto + 
+                    '<tr>' +
+                    '<td> <input type = "text" name="documento" id="documento" class = "tipo" value=' + documento +' ></td>'+
+                    '<td> <input type = "text" name="nombre" id="nombre" class = "tipo" value=' + nombre +' ></td>'+
+                    '<td> <input type = "text" name="telefono_cel" id="telefono_cel" class = "tipo" value=' + telefono_cel +' ></td>'+
+                    '<td> <input type = "text" name="email" id="email" class = "tipo" value=' + email +' ></td>'+
+                    '<td> <input type = "text" name="tipo" id="tipo" class = "tipo" value=' + tipo +' ></td>'
+                    +'</tr>' 
+                
    
     texto = texto + '</tbody></table>'
     return texto;
 })
 
-hbs.registerHelper('actualizarUsuarios',(cc, nombre, email, telefono, tipo)=>{
+hbs.registerHelper('actualizarUsuarios',(cc, nombre, email, telefono_cel, tipo)=>{
     listar();
 
     let encontrado = listE.find(buscar => buscar.cc == cc );
@@ -389,13 +451,13 @@ hbs.registerHelper('actualizarUsuarios',(cc, nombre, email, telefono, tipo)=>{
         cc=cc;
         nombre=nombre;
         email=email;
-        telefono=telefono;
+        telefono_cel=telefono_cel;
         tipo=tipo;
         guardar();
     }
 })
 
-const actualizarUsuarios = (cc, nombre, email, telefono, tipo) =>{
+const actualizarUsuarios = (cc, nombre, email, telefono_cel, tipo) =>{
     listar();
 
     let encontrado = listE.find(buscar => buscar.cc == cc );
@@ -406,7 +468,7 @@ const actualizarUsuarios = (cc, nombre, email, telefono, tipo) =>{
         cc=cc;
         nombre=nombre;
         email=email;
-        telefono=telefono;
+        telefono_cel=telefono_cel;
         tipo=tipo;
         guardar();
     }
@@ -418,44 +480,36 @@ hbs.registerHelper('buscar',(id)=>{
     return texto.nombre;
 })
 
-
-
-const eliminarCurso = (idc,idE) => {
-    listarMatriculas();
-    let idC = parseInt(idc);
-    let cursoId = [];// listM.filter(c =>c.idCurso != idC && c.idest != idE);
-    
-    
-    listM.forEach(s =>{
-        console.log(s.idCurso);
-        console.log(s.idest);
-        if(s.idCurso != idC || s.idest != idE){
-            cursoId.push(s);
-        }
-    })
-    console.log(cursoId.length);
-    if(cursoId.length == listM.length){
-        return false;
-    }else{
-        listM = cursoId;
-        console.log(listM)
-        guardarMatricula();
-    }
-    
+const eliminarCurso = (id) => {
+    listarCurso();
+    let idC = parseInt(id);
+    let cursoId = listC.filter(c =>c.id != idC);
+    listC = cursoId;
+    guardarCurso();
 };
 
 var msj;
 const informacion = (id) => {
-    listarCurso();
     let idC = parseInt(id);
-    let cursoId = listC.filter(c =>c.id == idC);
+    let cursoId = listCursos.filter(c =>c.id == idC);
     var yourval = JSON.stringify(cursoId);
-    console.log(cursoId);
+    console.log(listCursos);
     cursoId.forEach(element => {
         msj=(`El curso ${element.nombre}, tiene un 
         valor de ${element.valor}, con modalidad ${element.modalidad}
         de ${element.horas} horas:
         ${element.des}`);
+    });
+    
+        return msj;
+};
+
+const matricula = (id) => {
+    let idC = parseInt(id);
+    let cursoId = listCursos.filter(c =>c.id == idC);
+    console.log(listCursos);
+    cursoId.forEach(element => {
+        msj=(`Se ha matriculado satisfactoriamente a  ${element.nombre} `);
     });
     
         return msj;
@@ -536,7 +590,7 @@ hbs.registerHelper('listarMC',()=>{
 
 module.exports = {
     crear,
-    actualizar,
+    actualizarCurso,
     eliminar,
     crearCurso,
     matricular, 
@@ -546,6 +600,5 @@ module.exports = {
     cursosEst,
     eliminarInscrito,
     actualizarUsuarios,
-    listarMatriculas,
-    actualizarCurso
+    matricula
 }

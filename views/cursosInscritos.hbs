@@ -1,0 +1,22 @@
+{{>header}}
+{{>menu}}
+{{{listarDispo listado}}}
+{{{masInfo}}}
+<hr />
+<form action="./inscritos" method="GET">
+    <input class="txtNombre" id="txtNombre" name="id">
+    <button id="informacion" class="btn btn-info">ver inscritos</button>
+</form>
+<form action="./cerrar" method="POST">
+    <input class="txtNombre" id="txtNombre" name="id">
+    <input class="txtDocente" id="txtDocente" name="docente" placeholder="Ingresar Docente">
+    <button id="informacion" class="btn btn-success">Cerrar</button>
+</form>
+<script type="text/javascript">
+$('#tb tr').on('click', function(){
+  var dato = $(this).find('td:first').html();
+  $('.txtNombre').val(dato);
+});
+</script> 
+<hr />
+{{>footer}}
