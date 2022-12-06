@@ -4,7 +4,7 @@
   "description": "proyecto nodejs",
   "main": "app.js",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "hbs": "^4.0.4",
     "jquery": "^3.4.1",
     "popper.js": "^1.15.0",
